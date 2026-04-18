@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Filament Inventory</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg-primary: #0e1117;
+    --bg-card: #161b22;
+    --bg-card-hover: #1c2230;
+    --border: #30363d;
+    --text-primary: #e6edf3;
+    --text-secondary: #8b949e;
+    --text-muted: #484f58;
+    --accent: #58a6ff;
+    --accent-dim: #1f3a5f;
+    --petg-badge: #da7756;
+    --pla-badge: #58a6ff;
+    --silk-badge: #d4a853;
+    --mystery-badge: #a371f7;
+    --green-good: #3fb950;
+    --yellow-mid: #d29922;
+    --red-low: #f85149;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+  }
+
+  header {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  h1 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .printer-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.25rem 0.6rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+  }
+  .printer-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green-good); }
+
+  /* ── Summary Row ── */
+  .summary-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+  }
+  .stat-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 0.25rem;
+  }
+  .stat-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+  .stat-sub {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+  }
+
+  /* ── Charts Grid ── */
+  .charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    align-items: start;
+  }
+  @media (max-width: 700px) { .charts-grid { grid-template-columns: 1fr; } }
+
+  .chart-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.2rem;
+  }
+  .chart-card h3 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 1rem;
+  }
+  .chart-wrap { position: relative; max-height: 260px; }
+  .chart-wrap-tall { position: relative; }
+
+  /* ── AMS Tracker ── */
+  .ams-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.2rem;
+    margin-bottom: 2rem;
+  }
+  .ams-section h3 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 1rem;
+  }
+  .ams-slots {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.75rem;
+  }
+  .ams-slot {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.8rem;
+    text-align: center;
+    position: relative;
+    transition: background 0.2s;
+  }
+  .ams-slot:hover { background: var(--bg-card-hover); }
+  .ams-slot-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+  }
+  .ams-swatch {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    margin: 0 auto 0.5rem;
+    border: 2px solid var(--border);
+  }
+  .ams-slot-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  .ams-slot-material {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-secondary);
+  }
+
+  /* ── Inventory Table ── */
+  .inventory-section h2 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .material-group {
+    margin-bottom: 1.5rem;
+  }
+  .material-group-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.75rem;
+  }
+  .material-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .material-badge.pla { background: var(--accent-dim); color: var(--pla-badge); }
+  .material-badge.petg { background: #3d2418; color: var(--petg-badge); }
+  .material-badge.silk { background: #3d3018; color: var(--silk-badge); }
+  .material-badge.mystery { background: #2d1f4e; color: var(--mystery-badge); }
+  .material-group-count { font-size: 0.8rem; color: var(--text-muted); }
+
+  .spool-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .spool-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    display: flex;
+    gap: 0.8rem;
+    align-items: flex-start;
+    transition: background 0.2s, border-color 0.2s;
+    cursor: default;
+  }
+  .spool-card:hover {
+    background: var(--bg-card-hover);
+    border-color: #444c56;
+  }
+
+  .spool-swatch {
+    width: 32px; height: 32px;
+    border-radius: 6px;
+    flex-shrink: 0;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .spool-info { flex: 1; min-width: 0; }
+  .spool-name {
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 0.15rem;
+  }
+  .spool-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+
+  .weight-bar {
+    width: 100%;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-top: 0.5rem;
+    overflow: hidden;
+  }
+  .weight-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.3s;
+  }
+
+  .spool-qty {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    margin-top: 0.3rem;
+  }
+
+  /* ── Print Log ── */
+  .print-log-section {
+    margin-top: 2rem;
+  }
+  .print-log-section h2 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  .print-log-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.82rem;
+  }
+  .print-log-table thead th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .print-log-table tbody tr {
+    transition: background 0.15s;
+  }
+  .print-log-table tbody tr:hover {
+    background: var(--bg-card-hover);
+  }
+  .print-log-table td {
+    padding: 0.7rem 0.8rem;
+    border-bottom: 1px solid #1c2230;
+    vertical-align: top;
+  }
+  .print-status {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.1rem 0.45rem;
+    border-radius: 3px;
+    display: inline-block;
+  }
+  .print-status.success { background: #1a3a1a; color: var(--green-good); }
+  .print-status.failed { background: #3a1a1a; color: var(--red-low); }
+  .print-status.reprint { background: #3a2e1a; color: var(--yellow-mid); }
+  .print-warning {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--red-low);
+    background: #3a1a1a;
+    border: 1px solid #5a2020;
+    border-radius: 4px;
+    padding: 0.2rem 0.5rem;
+    margin-top: 0.3rem;
+    display: inline-block;
+  }
+  .print-link {
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 0.75rem;
+  }
+  .print-link:hover { text-decoration: underline; }
+  .print-notes {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-top: 0.2rem;
+  }
+
+  /* ── Footer ── */
+  footer {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  @media (max-width: 500px) {
+    .ams-slots { grid-template-columns: repeat(2, 1fr); }
+    .spool-grid { grid-template-columns: 1fr; }
+    .summary-row { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- ════════════════════════════════════════════════════════════════
+  INVENTORY DATA — Edit this section to update your filament stock.
+  
+  Each spool entry:
+    id:           unique string
+    name:         color name
+    material:     "PLA" | "PETG" | "PLA Silk" | "Mystery"
+    color:        hex code for display swatch
+    sku:          manufacturer SKU
+    spoolType:    "refill" | "spool"
+    weightG:      total weight in grams (1000 = 1kg)
+    remainingG:   how much is left in grams
+    costPerSpool: price paid (after discounts)
+    qty:          number of spools of this exact type
+    notes:        optional notes
+
+  AMS config: set which spool IDs are in slots 1-4
+
+  Print log entries:
+    date:         YYYY-MM-DD
+    name:         what you printed
+    url:          MakerWorld/Thingiverse link (optional)
+    material:     what material you used
+    materialUsed: what spool ID was used
+    status:       "success" | "failed" | "reprint"
+    notes:        what happened, lessons learned
+    warnings:     array of material warnings, e.g. ["Do NOT print with PLA Silk"]
+═══════════════════════════════════════════════════════════════════ -->
+<script>
+const INVENTORY_DATA = {
+  lastUpdated: "2026-04-18",
+  printer: "Bambu Lab P2S + AMS",
+
+  // Which spool IDs are loaded in AMS slots 1-4 (null = empty)
+  ams: ["pla-black", "pla-jade-white", "pla-red", "pla-yellow-refill", "pla-cyan"],
+
+  printLog: [
+    { date: "2026-04-11", name: "Mini Articulated Dragon Magnet Keychain", url: "https://makerworld.com/en/models/587584-mini-articulated-dragon-magnet-keychain", material: "PLA Silk", materialUsedId: "pla-silk-dawn", filamentUsedG: 9.53, status: "success", notes: "Dawn Radiance silk looks great. Simpler joints than Hormagaunt — PLA Silk works at this scale/geometry.", warnings: [] },
+    { date: "2026-04-11", name: "Articulated Tyranid Hormagaunt", url: "https://makerworld.com/en/models/1173257-articulated-tyranide-hormagaunt", material: "PLA Silk", materialUsedId: "pla-silk-dawn", filamentUsedG: 110.34, status: "failed", notes: "Articulated joints snapped — PLA (and especially silk PLA) too brittle for snap-fit hinges. Needs PETG. 110g of silk wasted.", warnings: ["Do NOT print with PLA Silk", "Do NOT print with PLA — use PETG"] },
+    { date: "2026-04-12", name: "Spiked Articulated Snake", url: "", material: "PLA Silk", materialUsedId: "pla-silk-dawn", filamentUsedG: 35.31, status: "success", notes: "Print-in-place articulated snake. Silk finish looks good on scales.", warnings: [] },
+    { date: "2026-04-12", name: "Mini Articulated Dragon Batch (full plate)", url: "https://makerworld.com/en/models/587584-mini-articulated-dragon-magnet-keychain", material: "PLA Silk", materialUsedId: "pla-silk-dawn", filamentUsedG: 228.78, status: "success", notes: "Full build plate of dragons. ~24 dragons at ~9.5g each. Party favors / gifts.", warnings: [] },
+    { date: "2026-04-13", name: "Mini Darth Vader Action Figure", url: "https://makerworld.com/en/models/2293763-new-darth-vader-mini-action-figure", material: "PLA Silk", materialUsedId: "pla-silk-dawn", filamentUsedG: 19.09, status: "failed", notes: "SO MUCH WASTE from supports. Fingers broke off during support removal. Should have been print-in-place. Silk PLA made breakage worse.", warnings: ["Do NOT print with PLA Silk — too brittle for small appendages with support removal"] },
+    { date: "2026-04-14", name: "Flexi Holding Cat (x2)", url: "https://makerworld.com/en/models/584640-flexi-holding-cat-print-in-place", material: "PLA Silk", materialUsedId: "pla-silk-dawn", filamentUsedG: 25.68, status: "success", notes: "Print-in-place, no supports, no assembly. Printed 2. Good model design. Swapped to black PLA after this.", warnings: [] },
+    { date: "2026-04-14", name: "Tyranids Leviathan Screaming Hunter", url: "", material: "PLA", materialUsedId: "pla-black", filamentUsedG: 53.01, status: "success", notes: "0.12mm layer height, 2 walls, 8% infill. Fine detail Tyranid mini for Rob's army.", warnings: [] },
+    { date: "2026-04-17", name: "Dummy 13 General Grievous (150%) — Plate 1 Black", url: "https://makerworld.com/en/models/1201894-dummy-13-general-grevious#profileId-1214989", material: "PLA", materialUsedId: "pla-black", filamentUsedG: 63.57, status: "reprint", notes: "Plate 1 (black/frame parts) took 3 attempts — small parts lost adhesion without brims. Added brims to all parts, then succeeded. Split into 2 custom plates: all-black (under/frame) and all-white (armor/saber colors). White plate printing next.", warnings: ["Add brims to all parts — small pieces will spaghetti without them"] },
+  ],
+
+  spools: [
+    // ── PLA Basic (Refills) — Order 1 ──
+    { id: "pla-purple", name: "Purple", material: "PLA", color: "#7B2D8E", sku: "10700", spoolType: "refill", weightG: 1000, remainingG: 1000, costPerSpool: 12.99, qty: 1, notes: "" },
+    { id: "pla-turquoise", name: "Turquoise", material: "PLA", color: "#40C9B0", sku: "10605", spoolType: "refill", weightG: 1000, remainingG: 1000, costPerSpool: 12.99, qty: 1, notes: "" },
+    { id: "pla-yellow-refill", name: "Yellow", material: "PLA", color: "#FFD700", sku: "10400", spoolType: "refill", weightG: 1000, remainingG: 1000, costPerSpool: 13.00, qty: 2, notes: "" },
+
+    // ── PLA Basic (Spools) ──
+    { id: "pla-jade-white", name: "Jade White", material: "PLA", color: "#E8E4D9", sku: "10100", spoolType: "spool", weightG: 1000, remainingG: 1000, costPerSpool: 14.94, qty: 3, notes: "1 from Order 1, 2 from Order 2 (Apr 18)" },
+    { id: "pla-black", name: "Black", material: "PLA", color: "#1a1a1a", sku: "10101", spoolType: "spool", weightG: 1000, remainingG: 883, costPerSpool: 14.94, qty: 3, notes: "1 from Order 1 (partially used), 2 from Order 2 (Apr 18)" },
+    { id: "pla-bambu-green", name: "Bambu Green", material: "PLA", color: "#00A651", sku: "10501", spoolType: "spool", weightG: 1000, remainingG: 1000, costPerSpool: 14.95, qty: 2, notes: "" },
+    { id: "pla-cyan", name: "Cyan", material: "PLA", color: "#00BCD4", sku: "10603", spoolType: "spool", weightG: 1000, remainingG: 1000, costPerSpool: 14.95, qty: 2, notes: "" },
+    { id: "pla-red", name: "Red", material: "PLA", color: "#D32F2F", sku: "10200", spoolType: "spool", weightG: 1000, remainingG: 1000, costPerSpool: 14.95, qty: 2, notes: "" },
+    { id: "pla-pumpkin-orange", name: "Pumpkin Orange", material: "PLA", color: "#E8751A", sku: "10301", spoolType: "spool", weightG: 1000, remainingG: 1000, costPerSpool: 14.94, qty: 1, notes: "Order 2 — Apr 18" },
+
+    // ── PLA Silk ──
+    { id: "pla-silk-dawn", name: "Dawn Radiance", material: "PLA Silk", color: "linear-gradient(135deg, #F4A460, #DAA520, #E8C07A, #CD853F)", sku: "13912", spoolType: "spool", weightG: 1000, remainingG: 571, costPerSpool: 24.99, qty: 1, notes: "Multi-color silk" },
+
+    // ── PETG Basic ──
+    { id: "petg-white", name: "White", material: "PETG", color: "#F0F0F0", sku: "30106", spoolType: "spool", weightG: 1000, remainingG: 1000, costPerSpool: 14.94, qty: 1, notes: "" },
+    { id: "petg-black", name: "Black", material: "PETG", color: "#1a1a1a", sku: "30105", spoolType: "spool", weightG: 1000, remainingG: 1000, costPerSpool: 14.94, qty: 1, notes: "" },
+    { id: "petg-blue", name: "Reflex Blue", material: "PETG", color: "#1939B7", sku: "30603", spoolType: "spool", weightG: 1000, remainingG: 1000, costPerSpool: 14.94, qty: 1, notes: "" },
+    { id: "petg-yellow", name: "Yellow", material: "PETG", color: "#FFC107", sku: "30402", spoolType: "spool", weightG: 1000, remainingG: 1000, costPerSpool: 14.94, qty: 1, notes: "" },
+    { id: "petg-red", name: "Red", material: "PETG", color: "#C62828", sku: "30201", spoolType: "spool", weightG: 1000, remainingG: 1000, costPerSpool: 14.94, qty: 1, notes: "" },
+
+    // ── PETG Translucent ──
+    { id: "petg-clear", name: "Clear", material: "PETG", color: "#c8ddf0", sku: "32101", spoolType: "spool", weightG: 1000, remainingG: 1000, costPerSpool: 14.94, qty: 1, notes: "Order 2 — Apr 18. Translucent — perfect for lamp/light projects." },
+
+    // ── Mystery Box ──
+    { id: "mystery-laser", name: "Laser Mystery Box", material: "Mystery", color: "linear-gradient(135deg, #a371f7, #58a6ff, #a371f7)", sku: "mystery", spoolType: "spool", weightG: 0, remainingG: 0, costPerSpool: 39.99, qty: 1, notes: "Plywood/Acrylic/PU/Metal — contents TBD" },
+  ]
+};
+
+// ════════════════════════════════════════════════════════════════
+// Dashboard logic below — you shouldn't need to edit this
+// ════════════════════════════════════════════════════════════════
+
+function computeStats(data) {
+  const spools = data.spools.filter(s => s.material !== "Mystery");
+  const totalSpools = spools.reduce((sum, s) => sum + s.qty, 0);
+  const totalWeightKg = spools.reduce((sum, s) => sum + (s.remainingG * s.qty), 0) / 1000;
+  const totalCost = data.spools.reduce((sum, s) => sum + (s.costPerSpool * s.qty), 0);
+  const materials = {};
+  spools.forEach(s => {
+    if (!materials[s.material]) materials[s.material] = { count: 0, weightG: 0 };
+    materials[s.material].count += s.qty;
+    materials[s.material].weightG += s.remainingG * s.qty;
+  });
+  const colors = spools.reduce((sum, s) => sum + 1, 0); // unique colors
+  return { totalSpools, totalWeightKg, totalCost, materials, colors };
+}
+
+function getBarColor(remaining, total) {
+  const pct = total > 0 ? remaining / total : 0;
+  if (pct > 0.5) return 'var(--green-good)';
+  if (pct > 0.2) return 'var(--yellow-mid)';
+  return 'var(--red-low)';
+}
+
+function renderDashboard() {
+  const data = INVENTORY_DATA;
+  const stats = computeStats(data);
+
+  // Summary cards
+  document.getElementById('total-spools').textContent = stats.totalSpools;
+  document.getElementById('total-weight').textContent = stats.totalWeightKg.toFixed(1) + ' kg';
+  document.getElementById('total-cost').textContent = '$' + stats.totalCost.toFixed(2);
+  document.getElementById('unique-colors').textContent = stats.colors;
+  document.getElementById('last-updated').textContent = data.lastUpdated;
+
+  // AMS slots
+  const amsContainer = document.getElementById('ams-slots');
+  amsContainer.innerHTML = data.ams.map((spoolId, i) => {
+    const spool = spoolId ? data.spools.find(s => s.id === spoolId) : null;
+    const swatchStyle = spool
+      ? (spool.color.includes('gradient')
+        ? `background: ${spool.color};`
+        : `background-color: ${spool.color};`)
+      : 'background: var(--border); opacity: 0.3;';
+    return `<div class="ams-slot">
+      <div class="ams-slot-num">${i < 4 ? 'SLOT ' + (i + 1) : 'EXTERNAL'}</div>
+      <div class="ams-swatch" style="${swatchStyle}"></div>
+      <div class="ams-slot-label">${spool ? spool.name : 'Empty'}</div>
+      <div class="ams-slot-material">${spool ? spool.material : '—'}</div>
+    </div>`;
+  }).join('');
+
+  // Group spools by material
+  const groups = {};
+  const materialOrder = ['PLA', 'PETG', 'PLA Silk', 'Mystery'];
+  data.spools.forEach(s => {
+    if (!groups[s.material]) groups[s.material] = [];
+    groups[s.material].push(s);
+  });
+
+  const invContainer = document.getElementById('inventory-grid');
+  invContainer.innerHTML = materialOrder
+    .filter(m => groups[m])
+    .map(material => {
+      const spools = groups[material];
+      const badgeClass = material === 'PLA' ? 'pla' : material === 'PETG' ? 'petg' : material === 'PLA Silk' ? 'silk' : 'mystery';
+      const totalQty = spools.reduce((s, sp) => s + sp.qty, 0);
+      return `<div class="material-group">
+        <div class="material-group-header">
+          <span class="material-badge ${badgeClass}">${material}</span>
+          <span class="material-group-count">${totalQty} spool${totalQty !== 1 ? 's' : ''}</span>
+        </div>
+        <div class="spool-grid">
+          ${spools.map(s => {
+            const swatchStyle = s.color.includes('gradient')
+              ? `background: ${s.color};`
+              : `background-color: ${s.color};`;
+            const pct = s.weightG > 0 ? (s.remainingG / s.weightG * 100) : 0;
+            const barColor = getBarColor(s.remainingG, s.weightG);
+            return `<div class="spool-card">
+              <div class="spool-swatch" style="${swatchStyle}"></div>
+              <div class="spool-info">
+                <div class="spool-name">${s.name}</div>
+                <div class="spool-meta">
+                  <span>${s.spoolType}</span>
+                  <span>$${s.costPerSpool.toFixed(2)}</span>
+                  ${s.weightG > 0 ? `<span>${s.remainingG}g / ${s.weightG}g</span>` : ''}
+                </div>
+                ${s.weightG > 0 ? `<div class="weight-bar"><div class="weight-bar-fill" style="width:${pct}%; background:${barColor}"></div></div>` : ''}
+                ${s.qty > 1 ? `<div class="spool-qty">× ${s.qty} spools</div>` : ''}
+                ${s.notes ? `<div class="spool-qty">${s.notes}</div>` : ''}
+              </div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>`;
+    }).join('');
+
+  // ── Charts ──
+  const matGroupColors = { PLA: '#58a6ff', PETG: '#da7756', 'PLA Silk': '#d4a853' };
+  const chartMaterialOrder = ['PLA', 'PLA Silk', 'PETG'];
+
+  // === INVENTORY DONUT — each color = slice, grouped by material outline ===
+  const invSlices = [];
+  const invGroupSlices = [];
+  chartMaterialOrder.forEach(mat => {
+    const matSpools = data.spools.filter(s => s.material === mat && s.weightG > 0);
+    if (matSpools.length === 0) return;
+    const groupTotal = matSpools.reduce((sum, s) => sum + s.qty, 0);
+    invGroupSlices.push({ material: mat, count: groupTotal, color: matGroupColors[mat] });
+    matSpools.forEach(s => {
+      for (let i = 0; i < s.qty; i++) {
+        invSlices.push({
+          label: s.name,
+          material: mat,
+          value: 1,
+          color: s.color.includes('gradient') ? matGroupColors[mat] : s.color,
+          borderColor: matGroupColors[mat],
+        });
+      }
+    });
+  });
+
+  new Chart(document.getElementById('chart-material'), {
+    type: 'doughnut',
+    data: {
+      labels: invSlices.map(s => s.label),
+      datasets: [
+        {
+          // Outer ring: individual colors with white borders
+          data: invSlices.map(s => s.value),
+          backgroundColor: invSlices.map(s => s.color),
+          borderColor: '#e6edf3',
+          borderWidth: 1.5,
+          weight: 3,
+        },
+        {
+          // Separator ring: thin white gap
+          data: [1],
+          backgroundColor: ['var(--bg-card)'],
+          borderWidth: 0,
+          weight: 0.3,
+        },
+        {
+          // Inner ring: material groups
+          data: invGroupSlices.map(g => g.count),
+          backgroundColor: invGroupSlices.map(g => g.color + '44'),
+          borderColor: invGroupSlices.map(g => g.color),
+          borderWidth: 2,
+          weight: 1.5,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '40%',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          filter: function(item) {
+            return item.datasetIndex !== 1; // hide separator from tooltips
+          },
+          callbacks: {
+            title: function() { return ''; },
+            label: function(ctx) {
+              if (ctx.datasetIndex === 0) {
+                return ` ${invSlices[ctx.dataIndex].label} (${invSlices[ctx.dataIndex].material})`;
+              }
+              if (ctx.datasetIndex === 2) {
+                return ` ${invGroupSlices[ctx.dataIndex].material}: ${invGroupSlices[ctx.dataIndex].count} spools`;
+              }
+              return '';
+            },
+            labelColor: function(ctx) {
+              if (ctx.datasetIndex === 0) {
+                return { backgroundColor: invSlices[ctx.dataIndex].color, borderColor: '#e6edf3' };
+              }
+              if (ctx.datasetIndex === 2) {
+                const g = invGroupSlices[ctx.dataIndex];
+                return { backgroundColor: g.color + '44', borderColor: g.color };
+              }
+              return { backgroundColor: '#8b949e', borderColor: '#8b949e' };
+            }
+          }
+        }
+      }
+    }
+  });
+
+  // Add manual legend for material groups
+  const matLegend = document.getElementById('chart-material-legend');
+  if (matLegend) {
+    matLegend.innerHTML = invGroupSlices.map(g =>
+      `<span style="display:inline-flex;align-items:center;gap:0.35rem;margin-right:1rem;">
+        <span style="width:10px;height:10px;border-radius:2px;border:2px solid ${g.color};background:${g.color}33;display:inline-block;"></span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:#8b949e;">${g.material} (${g.count})</span>
+      </span>`
+    ).join('');
+  }
+
+  // === USAGE DONUT — each color used = slice, grouped by material outline ===
+  const usageByColor = {};
+  const usageGroupTotals = {};
+  data.printLog.forEach(entry => {
+    if (!entry.filamentUsedG) return;
+    const spool = data.spools.find(s => s.id === entry.materialUsedId);
+    const key = entry.materialUsedId || entry.material;
+    if (!usageByColor[key]) {
+      // For very dark colors, lighten them so they're visible
+      let displayColor;
+      if (spool) {
+        const rawColor = spool.color.includes('gradient') ? matGroupColors[entry.material] : spool.color;
+        displayColor = (rawColor === '#1a1a1a') ? '#4a4a4a' : rawColor;
+      } else {
+        displayColor = matGroupColors[entry.material];
+      }
+      usageByColor[key] = {
+        label: spool ? spool.name : entry.material,
+        material: entry.material,
+        color: displayColor,
+        totalG: 0,
+      };
+    }
+    usageByColor[key].totalG += entry.filamentUsedG;
+    if (!usageGroupTotals[entry.material]) usageGroupTotals[entry.material] = 0;
+    usageGroupTotals[entry.material] += entry.filamentUsedG;
+  });
+
+  const usageSlices = [];
+  const usageGroups = [];
+  chartMaterialOrder.forEach(mat => {
+    const matEntries = Object.values(usageByColor).filter(u => u.material === mat);
+    if (matEntries.length === 0) return;
+    usageGroups.push({ material: mat, totalG: usageGroupTotals[mat], color: matGroupColors[mat] });
+    matEntries.sort((a, b) => b.totalG - a.totalG);
+    matEntries.forEach(u => {
+      usageSlices.push(u);
+    });
+  });
+
+  if (usageSlices.length > 0) {
+    new Chart(document.getElementById('chart-usage'), {
+      type: 'doughnut',
+      data: {
+        labels: usageSlices.map(s => s.label),
+        datasets: [
+          {
+            // Outer ring: colors used, white borders
+            data: usageSlices.map(s => s.totalG),
+            backgroundColor: usageSlices.map(s => s.color),
+            borderColor: '#e6edf3',
+            borderWidth: 1.5,
+            weight: 3,
+          },
+          {
+            // Separator
+            data: [1],
+            backgroundColor: ['var(--bg-card)'],
+            borderWidth: 0,
+            weight: 0.3,
+          },
+          {
+            // Inner ring: material groups
+            data: usageGroups.map(g => g.totalG),
+            backgroundColor: usageGroups.map(g => g.color + '44'),
+            borderColor: usageGroups.map(g => g.color),
+            borderWidth: 2,
+            weight: 1.5,
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '40%',
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            filter: function(item) {
+              return item.datasetIndex !== 1;
+            },
+            callbacks: {
+              title: function() { return ''; },
+              label: function(ctx) {
+                if (ctx.datasetIndex === 0) {
+                  return ` ${usageSlices[ctx.dataIndex].label}: ${usageSlices[ctx.dataIndex].totalG.toFixed(1)}g`;
+                }
+                if (ctx.datasetIndex === 2) {
+                  return ` ${usageGroups[ctx.dataIndex].material}: ${usageGroups[ctx.dataIndex].totalG.toFixed(1)}g total`;
+                }
+                return '';
+              },
+              labelColor: function(ctx) {
+                if (ctx.datasetIndex === 0) {
+                  return { backgroundColor: usageSlices[ctx.dataIndex].color, borderColor: '#e6edf3' };
+                }
+                if (ctx.datasetIndex === 2) {
+                  const g = usageGroups[ctx.dataIndex];
+                  return { backgroundColor: g.color + '44', borderColor: g.color };
+                }
+                return { backgroundColor: '#8b949e', borderColor: '#8b949e' };
+              }
+            }
+          }
+        }
+      }
+    });
+
+    const usageLegend = document.getElementById('chart-usage-legend');
+    if (usageLegend) {
+      usageLegend.innerHTML = usageGroups.map(g =>
+        `<span style="display:inline-flex;align-items:center;gap:0.35rem;margin-right:1rem;">
+          <span style="width:10px;height:10px;border-radius:2px;border:2px solid ${g.color};background:${g.color}33;display:inline-block;"></span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:#8b949e;">${g.material} (${g.totalG.toFixed(0)}g)</span>
+        </span>`
+      ).join('');
+    }
+  }
+
+  // === STOCK BAR CHARTS — per material type ===
+  const stockContainer = document.getElementById('stock-charts');
+  const stockMaterialOrder = ['PLA', 'PLA Silk', 'PETG'];
+
+  stockMaterialOrder.forEach(material => {
+    const matSpools = data.spools
+      .filter(s => s.material === material && s.weightG > 0)
+      .sort((a, b) => (b.remainingG * b.qty) - (a.remainingG * a.qty));
+    if (matSpools.length === 0) return;
+
+    const totalRemaining = matSpools.reduce((sum, s) => sum + (s.remainingG * s.qty), 0);
+    const totalCapacity = matSpools.reduce((sum, s) => sum + (s.weightG * s.qty), 0);
+    const matColor = matGroupColors[material] || '#8b949e';
+
+    const card = document.createElement('div');
+    card.className = 'chart-card';
+    card.style.marginBottom = '1rem';
+    card.innerHTML = `
+      <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.75rem;">
+        <h3 style="margin:0">${material}</h3>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--text-muted)">${(totalRemaining/1000).toFixed(1)} / ${(totalCapacity/1000).toFixed(1)} kg</span>
+      </div>
+      <div class="chart-wrap-stock"><canvas></canvas></div>
+    `;
+    stockContainer.appendChild(card);
+
+    const canvas = card.querySelector('canvas');
+    const chartH = Math.max(120, matSpools.length * 36);
+    canvas.parentElement.style.height = chartH + 'px';
+    canvas.parentElement.style.position = 'relative';
+
+    new Chart(canvas, {
+      type: 'bar',
+      data: {
+        labels: matSpools.map(s => s.qty > 1 ? `${s.name} (×${s.qty})` : s.name),
+        datasets: [
+          {
+            label: 'Remaining',
+            data: matSpools.map(s => (s.remainingG * s.qty) / 1000),
+            backgroundColor: matSpools.map(s => s.color.includes('gradient') ? matColor : s.color),
+            borderRadius: 4,
+            barThickness: 20,
+          },
+          {
+            label: 'Used',
+            data: matSpools.map(s => ((s.weightG - s.remainingG) * s.qty) / 1000),
+            backgroundColor: 'rgba(255,255,255,0.06)',
+            borderRadius: 4,
+            barThickness: 20,
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        indexAxis: 'y',
+        layout: { padding: { left: 10 } },
+        plugins: { legend: { display: false } },
+        scales: {
+          x: {
+            stacked: true,
+            title: { display: true, text: 'kg', color: '#484f58', font: { family: 'JetBrains Mono', size: 10 } },
+            ticks: { color: '#8b949e', font: { family: 'JetBrains Mono', size: 10 } },
+            grid: { color: '#21262d' },
+          },
+          y: {
+            stacked: true,
+            afterFit: function(axis) { axis.width = Math.max(axis.width, 130); },
+            ticks: { color: '#e6edf3', font: { family: 'DM Sans', size: 12, weight: 500 } },
+            grid: { display: false },
+          }
+        }
+      }
+    });
+  });
+
+  // ── Print Log ──
+  const logContainer = document.getElementById('print-log-body');
+  if (data.printLog && data.printLog.length > 0) {
+    logContainer.innerHTML = data.printLog
+      .sort((a, b) => b.date.localeCompare(a.date))
+      .map(entry => {
+        const statusClass = entry.status;
+        const statusLabel = entry.status === 'success' ? 'OK' : entry.status === 'failed' ? 'FAIL' : 'REDO';
+        return `<tr>
+          <td style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--text-secondary);white-space:nowrap">${entry.date}</td>
+          <td>
+            <div style="font-weight:600">${entry.name}</div>
+            ${entry.url ? `<a href="${entry.url}" target="_blank" rel="noopener" class="print-link">MakerWorld ↗</a>` : ''}
+          </td>
+          <td><span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem">${entry.material}</span></td>
+          <td><span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;white-space:nowrap">${entry.filamentUsedG ? entry.filamentUsedG + 'g' : '—'}</span></td>
+          <td><span class="print-status ${statusClass}">${statusLabel}</span></td>
+          <td>
+            ${entry.notes ? `<div class="print-notes">${entry.notes}</div>` : ''}
+            ${entry.warnings ? entry.warnings.map(w => `<div class="print-warning">⚠ ${w}</div>`).join('') : ''}
+          </td>
+        </tr>`;
+      }).join('');
+  } else {
+    logContainer.innerHTML = '<tr><td colspan="6" style="color:var(--text-muted);text-align:center;padding:2rem">No prints logged yet</td></tr>';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', renderDashboard);
+</script>
+
+<header>
+  <h1>Filament Inventory</h1>
+  <span class="subtitle">// spool tracker</span>
+</header>
+<div class="printer-badge"><span class="dot"></span> Bambu Lab P2S + AMS</div>
+
+<div class="summary-row">
+  <div class="stat-card">
+    <div class="stat-label">Total Spools</div>
+    <div class="stat-value" id="total-spools">—</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Total Weight</div>
+    <div class="stat-value" id="total-weight">—</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Invested</div>
+    <div class="stat-value" id="total-cost">—</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Unique Colors</div>
+    <div class="stat-value" id="unique-colors">—</div>
+  </div>
+</div>
+
+<div class="ams-section">
+  <h3>AMS Loaded — Slots 1–4 + External</h3>
+  <div class="ams-slots" id="ams-slots"></div>
+</div>
+
+<div class="charts-grid" style="grid-template-columns: 1fr 1fr;">
+  <div class="chart-card">
+    <h3>Material Breakdown</h3>
+    <div class="chart-wrap"><canvas id="chart-material"></canvas></div>
+    <div id="chart-material-legend" style="margin-top:0.75rem;text-align:center;"></div>
+  </div>
+  <div class="chart-card">
+    <h3>Filament Used</h3>
+    <div class="chart-wrap"><canvas id="chart-usage"></canvas></div>
+    <div id="chart-usage-legend" style="margin-top:0.75rem;text-align:center;"></div>
+  </div>
+</div>
+
+<div class="stock-section" style="margin-bottom: 2rem;">
+  <h2 style="font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:700;margin-bottom:1rem;">Stock</h2>
+  <div id="stock-charts"></div>
+</div>
+
+<div class="inventory-section">
+  <h2>All Spools</h2>
+  <div id="inventory-grid"></div>
+</div>
+
+<div class="print-log-section">
+  <h2>Print Log</h2>
+  <div style="overflow-x:auto">
+    <table class="print-log-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Model</th>
+          <th>Material</th>
+          <th>Used</th>
+          <th>Status</th>
+          <th>Notes / Warnings</th>
+        </tr>
+      </thead>
+      <tbody id="print-log-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<footer>
+  <span>Last updated: <span id="last-updated">—</span></span>
+  <span>Edit INVENTORY_DATA in index.html to update</span>
+</footer>
+
+</div>
+</body>
+</html>
