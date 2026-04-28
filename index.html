@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0033)file:///D:/Downloads/index_9.html -->
+<!-- saved from url=(0034)file:///D:/Downloads/index_10.html -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -134,8 +134,9 @@
     letter-spacing: 0.06em;
     margin-bottom: 1rem;
   }
-  .chart-wrap { position: relative; max-height: 260px; }
+  .chart-wrap { position: relative; height: 250px; }
   .chart-wrap-tall { position: relative; }
+  .chart-wrap-stock { position: relative; min-height: 120px; }
 
   /* ── AMS Tracker ── */
   .ams-section {
@@ -960,7 +961,7 @@ document.addEventListener('DOMContentLoaded', renderDashboard);
 <div class="charts-grid" style="grid-template-columns: 1fr 1fr;">
   <div class="chart-card">
     <h3>Material Breakdown</h3>
-    <div class="chart-wrap"><canvas id="chart-material" width="527" height="260" style="display: block; box-sizing: border-box; height: 260px; width: 527px;"></canvas></div>
+    <div class="chart-wrap" style="height:250px;width:100%;"><canvas id="chart-material" style="width: 527px; height: 250px; display: block; box-sizing: border-box;" width="527" height="250"></canvas></div>
     <div id="chart-material-legend" style="margin-top:0.75rem;text-align:center;"><span style="display:inline-flex;align-items:center;gap:0.35rem;margin-right:1rem;">
         <span style="width:10px;height:10px;border-radius:2px;border:2px solid #58a6ff;background:#58a6ff33;display:inline-block;"></span>
         <span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.7rem;color:#8b949e;">PLA (17)</span>
@@ -974,7 +975,7 @@ document.addEventListener('DOMContentLoaded', renderDashboard);
   </div>
   <div class="chart-card">
     <h3>Filament Used</h3>
-    <div class="chart-wrap"><canvas id="chart-usage" width="527" height="260" style="display: block; box-sizing: border-box; height: 260px; width: 527px;"></canvas></div>
+    <div class="chart-wrap" style="height:250px;width:100%;"><canvas id="chart-usage" style="width: 527px; height: 250px; display: block; box-sizing: border-box;" width="527" height="250"></canvas></div>
     <div id="chart-usage-legend" style="margin-top:0.75rem;text-align:center;"><span style="display:inline-flex;align-items:center;gap:0.35rem;margin-right:1rem;">
           <span style="width:10px;height:10px;border-radius:2px;border:2px solid #58a6ff;background:#58a6ff33;display:inline-block;"></span>
           <span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.7rem;color:#8b949e;">PLA (1860g)</span>
