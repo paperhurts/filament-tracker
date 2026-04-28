@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<!-- saved from url=(0034)file:///D:/Downloads/index_10.html -->
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
+<html lang="en">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Filament Inventory</title>
-<link href="./index_files/css2" rel="stylesheet">
-<script src="./index_files/chart.umd.min.js.download"></script>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
   :root {
     --bg-primary: #0e1117;
@@ -912,359 +912,48 @@ document.addEventListener('DOMContentLoaded', renderDashboard);
 <div class="summary-row">
   <div class="stat-card">
     <div class="stat-label">Total Spools</div>
-    <div class="stat-value" id="total-spools">24</div>
+    <div class="stat-value" id="total-spools">—</div>
   </div>
   <div class="stat-card">
     <div class="stat-label">Total Weight</div>
-    <div class="stat-value" id="total-weight">18.3 kg</div>
+    <div class="stat-value" id="total-weight">—</div>
   </div>
   <div class="stat-card">
     <div class="stat-label">Invested</div>
-    <div class="stat-value" id="total-cost">$400.88</div>
+    <div class="stat-value" id="total-cost">—</div>
   </div>
   <div class="stat-card">
     <div class="stat-label">Unique Colors</div>
-    <div class="stat-value" id="unique-colors">16</div>
+    <div class="stat-value" id="unique-colors">—</div>
   </div>
 </div>
 
 <div class="ams-section">
   <h3>AMS Loaded — Slots 1–4 + External</h3>
-  <div class="ams-slots" id="ams-slots"><div class="ams-slot">
-      <div class="ams-slot-num">SLOT 1</div>
-      <div class="ams-swatch" style="background-color: #1a1a1a;"></div>
-      <div class="ams-slot-label">Black</div>
-      <div class="ams-slot-material">PLA</div>
-    </div><div class="ams-slot">
-      <div class="ams-slot-num">SLOT 2</div>
-      <div class="ams-swatch" style="background-color: #E8E4D9;"></div>
-      <div class="ams-slot-label">Jade White</div>
-      <div class="ams-slot-material">PLA</div>
-    </div><div class="ams-slot">
-      <div class="ams-slot-num">SLOT 3</div>
-      <div class="ams-swatch" style="background-color: #00BCD4;"></div>
-      <div class="ams-slot-label">Cyan</div>
-      <div class="ams-slot-material">PLA</div>
-    </div><div class="ams-slot">
-      <div class="ams-slot-num">SLOT 4</div>
-      <div class="ams-swatch" style="background-color: #D32F2F;"></div>
-      <div class="ams-slot-label">Red</div>
-      <div class="ams-slot-material">PLA</div>
-    </div><div class="ams-slot">
-      <div class="ams-slot-num">EXTERNAL</div>
-      <div class="ams-swatch" style="background: var(--border); opacity: 0.3;"></div>
-      <div class="ams-slot-label">Empty</div>
-      <div class="ams-slot-material">—</div>
-    </div></div>
+  <div class="ams-slots" id="ams-slots"></div>
 </div>
 
 <div class="charts-grid" style="grid-template-columns: 1fr 1fr;">
   <div class="chart-card">
     <h3>Material Breakdown</h3>
-    <div class="chart-wrap" style="height:250px;width:100%;"><canvas id="chart-material" style="width: 527px; height: 250px; display: block; box-sizing: border-box;" width="527" height="250"></canvas></div>
-    <div id="chart-material-legend" style="margin-top:0.75rem;text-align:center;"><span style="display:inline-flex;align-items:center;gap:0.35rem;margin-right:1rem;">
-        <span style="width:10px;height:10px;border-radius:2px;border:2px solid #58a6ff;background:#58a6ff33;display:inline-block;"></span>
-        <span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.7rem;color:#8b949e;">PLA (17)</span>
-      </span><span style="display:inline-flex;align-items:center;gap:0.35rem;margin-right:1rem;">
-        <span style="width:10px;height:10px;border-radius:2px;border:2px solid #d4a853;background:#d4a85333;display:inline-block;"></span>
-        <span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.7rem;color:#8b949e;">PLA Silk (1)</span>
-      </span><span style="display:inline-flex;align-items:center;gap:0.35rem;margin-right:1rem;">
-        <span style="width:10px;height:10px;border-radius:2px;border:2px solid #da7756;background:#da775633;display:inline-block;"></span>
-        <span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.7rem;color:#8b949e;">PETG (6)</span>
-      </span></div>
+    <div class="chart-wrap" style="height:250px;width:100%;"><canvas id="chart-material" style="width:100%;height:100%;"></canvas></div>
+    <div id="chart-material-legend" style="margin-top:0.75rem;text-align:center;"></div>
   </div>
   <div class="chart-card">
     <h3>Filament Used</h3>
-    <div class="chart-wrap" style="height:250px;width:100%;"><canvas id="chart-usage" style="width: 527px; height: 250px; display: block; box-sizing: border-box;" width="527" height="250"></canvas></div>
-    <div id="chart-usage-legend" style="margin-top:0.75rem;text-align:center;"><span style="display:inline-flex;align-items:center;gap:0.35rem;margin-right:1rem;">
-          <span style="width:10px;height:10px;border-radius:2px;border:2px solid #58a6ff;background:#58a6ff33;display:inline-block;"></span>
-          <span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.7rem;color:#8b949e;">PLA (1860g)</span>
-        </span><span style="display:inline-flex;align-items:center;gap:0.35rem;margin-right:1rem;">
-          <span style="width:10px;height:10px;border-radius:2px;border:2px solid #d4a853;background:#d4a85333;display:inline-block;"></span>
-          <span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.7rem;color:#8b949e;">PLA Silk (429g)</span>
-        </span></div>
+    <div class="chart-wrap" style="height:250px;width:100%;"><canvas id="chart-usage" style="width:100%;height:100%;"></canvas></div>
+    <div id="chart-usage-legend" style="margin-top:0.75rem;text-align:center;"></div>
   </div>
 </div>
 
 <div class="stock-section" style="margin-bottom: 2rem;">
-  <h2 style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:1rem;font-weight:700;margin-bottom:1rem;">Stock</h2>
-  <div id="stock-charts"><div class="chart-card" style="margin-bottom: 1rem;">
-      <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.75rem;">
-        <h3 style="margin:0">PLA</h3>
-        <span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;color:var(--text-muted)">11.7 / 17.0 kg</span>
-      </div>
-      <div class="chart-wrap-stock" style="height: 324px; position: relative;"><canvas width="1111" height="324" style="display: block; box-sizing: border-box; height: 324px; width: 1111px;"></canvas></div>
-    </div><div class="chart-card" style="margin-bottom: 1rem;">
-      <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.75rem;">
-        <h3 style="margin:0">PLA Silk</h3>
-        <span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;color:var(--text-muted)">0.6 / 1.0 kg</span>
-      </div>
-      <div class="chart-wrap-stock" style="height: 120px; position: relative;"><canvas width="1111" height="120" style="display: block; box-sizing: border-box; height: 120px; width: 1111px;"></canvas></div>
-    </div><div class="chart-card" style="margin-bottom: 1rem;">
-      <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.75rem;">
-        <h3 style="margin:0">PETG</h3>
-        <span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;color:var(--text-muted)">6.0 / 6.0 kg</span>
-      </div>
-      <div class="chart-wrap-stock" style="height: 216px; position: relative;"><canvas width="1111" height="216" style="display: block; box-sizing: border-box; height: 216px; width: 1111px;"></canvas></div>
-    </div></div>
+  <h2 style="font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:700;margin-bottom:1rem;">Stock</h2>
+  <div id="stock-charts"></div>
 </div>
 
 <div class="inventory-section">
   <h2>All Spools</h2>
-  <div id="inventory-grid"><div class="material-group">
-        <div class="material-group-header">
-          <span class="material-badge pla">PLA</span>
-          <span class="material-group-count">17 spools</span>
-        </div>
-        <div class="spool-grid">
-          <div class="spool-card">
-              <div class="spool-swatch" style="background-color: #7B2D8E;"></div>
-              <div class="spool-info">
-                <div class="spool-name">Purple</div>
-                <div class="spool-meta">
-                  <span>refill</span>
-                  <span>$12.99</span>
-                  <span>1000g / 1000g</span>
-                </div>
-                <div class="weight-bar"><div class="weight-bar-fill" style="width:100%; background:var(--green-good)"></div></div>
-                
-                
-              </div>
-            </div><div class="spool-card">
-              <div class="spool-swatch" style="background-color: #40C9B0;"></div>
-              <div class="spool-info">
-                <div class="spool-name">Turquoise</div>
-                <div class="spool-meta">
-                  <span>refill</span>
-                  <span>$12.99</span>
-                  <span>1000g / 1000g</span>
-                </div>
-                <div class="weight-bar"><div class="weight-bar-fill" style="width:100%; background:var(--green-good)"></div></div>
-                
-                
-              </div>
-            </div><div class="spool-card">
-              <div class="spool-swatch" style="background-color: #FFD700;"></div>
-              <div class="spool-info">
-                <div class="spool-name">Yellow</div>
-                <div class="spool-meta">
-                  <span>refill</span>
-                  <span>$13.00</span>
-                  <span>1000g / 1000g</span>
-                </div>
-                <div class="weight-bar"><div class="weight-bar-fill" style="width:100%; background:var(--green-good)"></div></div>
-                <div class="spool-qty">× 2 spools</div>
-                
-              </div>
-            </div><div class="spool-card">
-              <div class="spool-swatch" style="background-color: #E8E4D9;"></div>
-              <div class="spool-info">
-                <div class="spool-name">Jade White</div>
-                <div class="spool-meta">
-                  <span>spool</span>
-                  <span>$14.94</span>
-                  <span>375g / 1000g</span>
-                </div>
-                <div class="weight-bar"><div class="weight-bar-fill" style="width:37.5%; background:var(--yellow-mid)"></div></div>
-                <div class="spool-qty">× 3 spools</div>
-                <div class="spool-qty">1st spool ~375g left. 2 fresh from Order 2.</div>
-              </div>
-            </div><div class="spool-card">
-              <div class="spool-swatch" style="background-color: #1a1a1a;"></div>
-              <div class="spool-info">
-                <div class="spool-name">Black</div>
-                <div class="spool-meta">
-                  <span>spool</span>
-                  <span>$14.94</span>
-                  <span>87g / 1000g</span>
-                </div>
-                <div class="weight-bar"><div class="weight-bar-fill" style="width:8.7%; background:var(--red-low)"></div></div>
-                <div class="spool-qty">× 3 spools</div>
-                <div class="spool-qty">1st spool nearly empty (~87g). 2 fresh from Order 2.</div>
-              </div>
-            </div><div class="spool-card">
-              <div class="spool-swatch" style="background-color: #00A651;"></div>
-              <div class="spool-info">
-                <div class="spool-name">Bambu Green</div>
-                <div class="spool-meta">
-                  <span>spool</span>
-                  <span>$14.95</span>
-                  <span>1000g / 1000g</span>
-                </div>
-                <div class="weight-bar"><div class="weight-bar-fill" style="width:100%; background:var(--green-good)"></div></div>
-                <div class="spool-qty">× 2 spools</div>
-                
-              </div>
-            </div><div class="spool-card">
-              <div class="spool-swatch" style="background-color: #00BCD4;"></div>
-              <div class="spool-info">
-                <div class="spool-name">Cyan</div>
-                <div class="spool-meta">
-                  <span>spool</span>
-                  <span>$14.95</span>
-                  <span>871g / 1000g</span>
-                </div>
-                <div class="weight-bar"><div class="weight-bar-fill" style="width:87.1%; background:var(--green-good)"></div></div>
-                <div class="spool-qty">× 2 spools</div>
-                <div class="spool-qty">1st spool ~871g. Sea Emperor + organizer pegs.</div>
-              </div>
-            </div><div class="spool-card">
-              <div class="spool-swatch" style="background-color: #D32F2F;"></div>
-              <div class="spool-info">
-                <div class="spool-name">Red</div>
-                <div class="spool-meta">
-                  <span>spool</span>
-                  <span>$14.95</span>
-                  <span>807g / 1000g</span>
-                </div>
-                <div class="weight-bar"><div class="weight-bar-fill" style="width:80.7%; background:var(--green-good)"></div></div>
-                <div class="spool-qty">× 2 spools</div>
-                <div class="spool-qty">1st spool ~807g. Ghostbuster, Grim Reaper, Sea Dragon.</div>
-              </div>
-            </div><div class="spool-card">
-              <div class="spool-swatch" style="background-color: #E8751A;"></div>
-              <div class="spool-info">
-                <div class="spool-name">Pumpkin Orange</div>
-                <div class="spool-meta">
-                  <span>spool</span>
-                  <span>$14.94</span>
-                  <span>1000g / 1000g</span>
-                </div>
-                <div class="weight-bar"><div class="weight-bar-fill" style="width:100%; background:var(--green-good)"></div></div>
-                
-                <div class="spool-qty">Order 2 — Apr 18</div>
-              </div>
-            </div>
-        </div>
-      </div><div class="material-group">
-        <div class="material-group-header">
-          <span class="material-badge petg">PETG</span>
-          <span class="material-group-count">6 spools</span>
-        </div>
-        <div class="spool-grid">
-          <div class="spool-card">
-              <div class="spool-swatch" style="background-color: #F0F0F0;"></div>
-              <div class="spool-info">
-                <div class="spool-name">White</div>
-                <div class="spool-meta">
-                  <span>spool</span>
-                  <span>$14.94</span>
-                  <span>1000g / 1000g</span>
-                </div>
-                <div class="weight-bar"><div class="weight-bar-fill" style="width:100%; background:var(--green-good)"></div></div>
-                
-                
-              </div>
-            </div><div class="spool-card">
-              <div class="spool-swatch" style="background-color: #1a1a1a;"></div>
-              <div class="spool-info">
-                <div class="spool-name">Black</div>
-                <div class="spool-meta">
-                  <span>spool</span>
-                  <span>$14.94</span>
-                  <span>1000g / 1000g</span>
-                </div>
-                <div class="weight-bar"><div class="weight-bar-fill" style="width:100%; background:var(--green-good)"></div></div>
-                
-                
-              </div>
-            </div><div class="spool-card">
-              <div class="spool-swatch" style="background-color: #1939B7;"></div>
-              <div class="spool-info">
-                <div class="spool-name">Reflex Blue</div>
-                <div class="spool-meta">
-                  <span>spool</span>
-                  <span>$14.94</span>
-                  <span>1000g / 1000g</span>
-                </div>
-                <div class="weight-bar"><div class="weight-bar-fill" style="width:100%; background:var(--green-good)"></div></div>
-                
-                
-              </div>
-            </div><div class="spool-card">
-              <div class="spool-swatch" style="background-color: #FFC107;"></div>
-              <div class="spool-info">
-                <div class="spool-name">Yellow</div>
-                <div class="spool-meta">
-                  <span>spool</span>
-                  <span>$14.94</span>
-                  <span>1000g / 1000g</span>
-                </div>
-                <div class="weight-bar"><div class="weight-bar-fill" style="width:100%; background:var(--green-good)"></div></div>
-                
-                
-              </div>
-            </div><div class="spool-card">
-              <div class="spool-swatch" style="background-color: #C62828;"></div>
-              <div class="spool-info">
-                <div class="spool-name">Red</div>
-                <div class="spool-meta">
-                  <span>spool</span>
-                  <span>$14.94</span>
-                  <span>1000g / 1000g</span>
-                </div>
-                <div class="weight-bar"><div class="weight-bar-fill" style="width:100%; background:var(--green-good)"></div></div>
-                
-                
-              </div>
-            </div><div class="spool-card">
-              <div class="spool-swatch" style="background-color: #c8ddf0;"></div>
-              <div class="spool-info">
-                <div class="spool-name">Clear</div>
-                <div class="spool-meta">
-                  <span>spool</span>
-                  <span>$14.94</span>
-                  <span>1000g / 1000g</span>
-                </div>
-                <div class="weight-bar"><div class="weight-bar-fill" style="width:100%; background:var(--green-good)"></div></div>
-                
-                <div class="spool-qty">Order 2 — Apr 18. Translucent — perfect for lamp/light projects.</div>
-              </div>
-            </div>
-        </div>
-      </div><div class="material-group">
-        <div class="material-group-header">
-          <span class="material-badge silk">PLA Silk</span>
-          <span class="material-group-count">1 spool</span>
-        </div>
-        <div class="spool-grid">
-          <div class="spool-card">
-              <div class="spool-swatch" style="background: linear-gradient(135deg, #F4A460, #DAA520, #E8C07A, #CD853F);"></div>
-              <div class="spool-info">
-                <div class="spool-name">Dawn Radiance</div>
-                <div class="spool-meta">
-                  <span>spool</span>
-                  <span>$24.99</span>
-                  <span>571g / 1000g</span>
-                </div>
-                <div class="weight-bar"><div class="weight-bar-fill" style="width:57.099999999999994%; background:var(--green-good)"></div></div>
-                
-                <div class="spool-qty">Multi-color silk</div>
-              </div>
-            </div>
-        </div>
-      </div><div class="material-group">
-        <div class="material-group-header">
-          <span class="material-badge mystery">Mystery</span>
-          <span class="material-group-count">1 spool</span>
-        </div>
-        <div class="spool-grid">
-          <div class="spool-card">
-              <div class="spool-swatch" style="background: linear-gradient(135deg, #a371f7, #58a6ff, #a371f7);"></div>
-              <div class="spool-info">
-                <div class="spool-name">Laser Mystery Box</div>
-                <div class="spool-meta">
-                  <span>spool</span>
-                  <span>$39.99</span>
-                  
-                </div>
-                
-                
-                <div class="spool-qty">Plywood/Acrylic/PU/Metal — contents TBD</div>
-              </div>
-            </div>
-        </div>
-      </div></div>
+  <div id="inventory-grid"></div>
 </div>
 
 <div class="print-log-section">
@@ -1281,264 +970,16 @@ document.addEventListener('DOMContentLoaded', renderDashboard);
           <th>Notes / Warnings</th>
         </tr>
       </thead>
-      <tbody id="print-log-body"><tr>
-          <td style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;color:var(--text-secondary);white-space:nowrap">2026-04-28</td>
-          <td>
-            <div style="font-weight:600">Modular D&amp;D Medieval Tavern &amp; Inn Set (2 plates)</div>
-            
-          </td>
-          <td><span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem">PLA</span></td>
-          <td><span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;white-space:nowrap">338g</span></td>
-          <td><span class="print-status success">OK</span></td>
-          <td>
-            <div class="print-notes">Plate 2: A1 Black 92g, Plate 1: A1 Black 246g. More D&amp;D terrain — printing today.</div>
-            
-          </td>
-        </tr><tr>
-          <td style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;color:var(--text-secondary);white-space:nowrap">2026-04-27</td>
-          <td>
-            <div style="font-weight:600">Imperial Tower (3 plates)</div>
-            
-          </td>
-          <td><span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem">PLA</span></td>
-          <td><span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;white-space:nowrap">334g</span></td>
-          <td><span class="print-status success">OK</span></td>
-          <td>
-            <div class="print-notes">Plate 1: A1 Black 104g, Plate 2: A1 Black 134g, Plate 3: A1 Black 96g. D&amp;D terrain for Rob's campaign.</div>
-            
-          </td>
-        </tr><tr>
-          <td style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;color:var(--text-secondary);white-space:nowrap">2026-04-26</td>
-          <td>
-            <div style="font-weight:600">Altoids Chess Set (x3)</div>
-            
-          </td>
-          <td><span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem">PLA</span></td>
-          <td><span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;white-space:nowrap">36g</span></td>
-          <td><span class="print-status success">OK</span></td>
-          <td>
-            <div class="print-notes">Multicolor: A2 White 8g + A1 Black 4g per set. Printed 3 copies — was a hit.</div>
-            
-          </td>
-        </tr><tr>
-          <td style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;color:var(--text-secondary);white-space:nowrap">2026-04-25</td>
-          <td>
-            <div style="font-weight:600">Mid-Century Organizer (3 plates)</div>
-            
-          </td>
-          <td><span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem">PLA</span></td>
-          <td><span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;white-space:nowrap">445g</span></td>
-          <td><span class="print-status success">OK</span></td>
-          <td>
-            <div class="print-notes">Plate 1: A2 White 387g (15.2h!), Plate 2: A2 White 56g, Plate 3: A3 Cyan 2g (pegs). First practical/household print.</div>
-            
-          </td>
-        </tr><tr>
-          <td style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;color:var(--text-secondary);white-space:nowrap">2026-04-24</td>
-          <td>
-            <div style="font-weight:600">Flexi Skeleton Spinosaurus (25cm)</div>
-            
-          </td>
-          <td><span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem">PLA</span></td>
-          <td><span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;white-space:nowrap">90g</span></td>
-          <td><span class="print-status success">OK</span></td>
-          <td>
-            <div class="print-notes">0.2mm layer, 2 walls, 5% infill. Print-in-place skeleton dino.</div>
-            
-          </td>
-        </tr><tr>
-          <td style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;color:var(--text-secondary);white-space:nowrap">2026-04-23</td>
-          <td>
-            <div style="font-weight:600">Articulated Sea Dragon Leviathan — Subnautica (3 plates)</div>
-            
-          </td>
-          <td><span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem">PLA</span></td>
-          <td><span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;white-space:nowrap">178g</span></td>
-          <td><span class="print-status success">OK</span></td>
-          <td>
-            <div class="print-notes">Plate 1 Body: A4 Red 53g, Plate 1: A4 Red 54g, Plate 2: A4 Red 71g. Subnautica collection complete.</div>
-            
-          </td>
-        </tr><tr>
-          <td style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;color:var(--text-secondary);white-space:nowrap">2026-04-22</td>
-          <td>
-            <div style="font-weight:600">Articulated Reaper Leviathan — Subnautica</div>
-            <a href="https://makerworld.com/en/models/572246-articulated-reaper-leviathan-subnautica" target="_blank" rel="noopener" class="print-link">MakerWorld ↗</a>
-          </td>
-          <td><span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem">PLA</span></td>
-          <td><span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;white-space:nowrap">84g</span></td>
-          <td><span class="print-status success">OK</span></td>
-          <td>
-            <div class="print-notes">Printed in Jade White. Articulation works great in PLA at this scale.</div>
-            
-          </td>
-        </tr><tr>
-          <td style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;color:var(--text-secondary);white-space:nowrap">2026-04-22</td>
-          <td>
-            <div style="font-weight:600">Articulated Jetragon — Palworld</div>
-            
-          </td>
-          <td><span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem">PLA</span></td>
-          <td><span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;white-space:nowrap">72g</span></td>
-          <td><span class="print-status success">OK</span></td>
-          <td>
-            <div class="print-notes">Printed in Jade White. Rowan's Palworld collection.</div>
-            
-          </td>
-        </tr><tr>
-          <td style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;color:var(--text-secondary);white-space:nowrap">2026-04-22</td>
-          <td>
-            <div style="font-weight:600">Articulated Sea Emperor Leviathan — Subnautica (2 plates)</div>
-            
-          </td>
-          <td><span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem">PLA</span></td>
-          <td><span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;white-space:nowrap">127g</span></td>
-          <td><span class="print-status success">OK</span></td>
-          <td>
-            <div class="print-notes">Plate 1: A3 Cyan 58g, Plate 2: A3 Cyan 69g. Looks amazing in cyan.</div>
-            
-          </td>
-        </tr><tr>
-          <td style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;color:var(--text-secondary);white-space:nowrap">2026-04-21</td>
-          <td>
-            <div style="font-weight:600">Grim Reaper Gamer Edition (3 plates)</div>
-            
-          </td>
-          <td><span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem">PLA</span></td>
-          <td><span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;white-space:nowrap">26g</span></td>
-          <td><span class="print-status success">OK</span></td>
-          <td>
-            <div class="print-notes">Plate 1: A1 Black 22g (body/helmet), Plate 2: A4 Red 2g (controller), Plate 3: A2 White 2g (skull face). Multicolor assembly model.</div>
-            
-          </td>
-        </tr><tr>
-          <td style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;color:var(--text-secondary);white-space:nowrap">2026-04-20</td>
-          <td>
-            <div style="font-weight:600">Dummy 13 Ghostbuster 1.0</div>
-            
-          </td>
-          <td><span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem">PLA</span></td>
-          <td><span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;white-space:nowrap">13g</span></td>
-          <td><span class="print-status success">OK</span></td>
-          <td>
-            <div class="print-notes">Printed in red. Quick little Dummy 13 variant.</div>
-            
-          </td>
-        </tr><tr>
-          <td style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;color:var(--text-secondary);white-space:nowrap">2026-04-17</td>
-          <td>
-            <div style="font-weight:600">Dummy 13 General Grievous (150%) — Plate 1 Black</div>
-            <a href="https://makerworld.com/en/models/1201894-dummy-13-general-grevious" target="_blank" rel="noopener" class="print-link">MakerWorld ↗</a>
-          </td>
-          <td><span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem">PLA</span></td>
-          <td><span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;white-space:nowrap">63.57g</span></td>
-          <td><span class="print-status reprint">REDO</span></td>
-          <td>
-            <div class="print-notes">Took 3 attempts — small parts lost adhesion without brims. Split into 2 custom plates by color.</div>
-            <div class="print-warning">⚠ Add brims to all parts — small pieces will spaghetti without them</div>
-          </td>
-        </tr><tr>
-          <td style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;color:var(--text-secondary);white-space:nowrap">2026-04-14</td>
-          <td>
-            <div style="font-weight:600">Flexi Holding Cat (x2)</div>
-            <a href="https://makerworld.com/en/models/584640-flexi-holding-cat-print-in-place" target="_blank" rel="noopener" class="print-link">MakerWorld ↗</a>
-          </td>
-          <td><span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem">PLA Silk</span></td>
-          <td><span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;white-space:nowrap">25.68g</span></td>
-          <td><span class="print-status success">OK</span></td>
-          <td>
-            <div class="print-notes">Print-in-place, no supports. Printed 2. Swapped to black PLA after this.</div>
-            
-          </td>
-        </tr><tr>
-          <td style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;color:var(--text-secondary);white-space:nowrap">2026-04-14</td>
-          <td>
-            <div style="font-weight:600">Tyranids Leviathan Screaming Hunter</div>
-            
-          </td>
-          <td><span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem">PLA</span></td>
-          <td><span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;white-space:nowrap">53.01g</span></td>
-          <td><span class="print-status success">OK</span></td>
-          <td>
-            <div class="print-notes">0.12mm layer height, 2 walls, 8% infill. Fine detail Tyranid mini for Rob.</div>
-            
-          </td>
-        </tr><tr>
-          <td style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;color:var(--text-secondary);white-space:nowrap">2026-04-13</td>
-          <td>
-            <div style="font-weight:600">Mini Darth Vader Action Figure</div>
-            <a href="https://makerworld.com/en/models/2293763-new-darth-vader-mini-action-figure" target="_blank" rel="noopener" class="print-link">MakerWorld ↗</a>
-          </td>
-          <td><span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem">PLA Silk</span></td>
-          <td><span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;white-space:nowrap">19.09g</span></td>
-          <td><span class="print-status failed">FAIL</span></td>
-          <td>
-            <div class="print-notes">SO MUCH WASTE from supports. Fingers broke off during support removal. Should have been print-in-place.</div>
-            <div class="print-warning">⚠ Do NOT print with PLA Silk — too brittle for small appendages with support removal</div>
-          </td>
-        </tr><tr>
-          <td style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;color:var(--text-secondary);white-space:nowrap">2026-04-12</td>
-          <td>
-            <div style="font-weight:600">Spiked Articulated Snake</div>
-            
-          </td>
-          <td><span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem">PLA Silk</span></td>
-          <td><span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;white-space:nowrap">35.31g</span></td>
-          <td><span class="print-status success">OK</span></td>
-          <td>
-            <div class="print-notes">Print-in-place articulated snake. Silk finish looks good on scales.</div>
-            
-          </td>
-        </tr><tr>
-          <td style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;color:var(--text-secondary);white-space:nowrap">2026-04-12</td>
-          <td>
-            <div style="font-weight:600">Mini Articulated Dragon Batch (full plate)</div>
-            <a href="https://makerworld.com/en/models/587584-mini-articulated-dragon-magnet-keychain" target="_blank" rel="noopener" class="print-link">MakerWorld ↗</a>
-          </td>
-          <td><span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem">PLA Silk</span></td>
-          <td><span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;white-space:nowrap">228.78g</span></td>
-          <td><span class="print-status success">OK</span></td>
-          <td>
-            <div class="print-notes">Full build plate of dragons. ~24 dragons at ~9.5g each. Party favors / gifts.</div>
-            
-          </td>
-        </tr><tr>
-          <td style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;color:var(--text-secondary);white-space:nowrap">2026-04-11</td>
-          <td>
-            <div style="font-weight:600">Mini Articulated Dragon Magnet Keychain</div>
-            <a href="https://makerworld.com/en/models/587584-mini-articulated-dragon-magnet-keychain" target="_blank" rel="noopener" class="print-link">MakerWorld ↗</a>
-          </td>
-          <td><span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem">PLA Silk</span></td>
-          <td><span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;white-space:nowrap">9.53g</span></td>
-          <td><span class="print-status success">OK</span></td>
-          <td>
-            <div class="print-notes">Dawn Radiance silk looks great. Simpler joints than Hormagaunt — PLA Silk works at this scale/geometry.</div>
-            
-          </td>
-        </tr><tr>
-          <td style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;color:var(--text-secondary);white-space:nowrap">2026-04-11</td>
-          <td>
-            <div style="font-weight:600">Articulated Tyranid Hormagaunt</div>
-            <a href="https://makerworld.com/en/models/1173257-articulated-tyranide-hormagaunt" target="_blank" rel="noopener" class="print-link">MakerWorld ↗</a>
-          </td>
-          <td><span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem">PLA Silk</span></td>
-          <td><span style="font-family:&#39;JetBrains Mono&#39;,monospace;font-size:0.75rem;white-space:nowrap">110.34g</span></td>
-          <td><span class="print-status failed">FAIL</span></td>
-          <td>
-            <div class="print-notes">Articulated joints snapped — PLA (and especially silk PLA) too brittle for snap-fit hinges. Needs PETG.</div>
-            <div class="print-warning">⚠ Do NOT print with PLA Silk</div><div class="print-warning">⚠ Do NOT print with PLA — use PETG</div>
-          </td>
-        </tr></tbody>
+      <tbody id="print-log-body"></tbody>
     </table>
   </div>
 </div>
 
 <footer>
-  <span>Last updated: <span id="last-updated">2026-04-28</span></span>
+  <span>Last updated: <span id="last-updated">—</span></span>
   <span>Edit INVENTORY_DATA in index.html to update</span>
 </footer>
 
 </div>
-
-
-</body></html>
+</body>
+</html>
