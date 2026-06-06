@@ -55,12 +55,21 @@ def _request(method, path, payload=None, token=None):
 
 def login():
     email = input("Bambu account email: ").strip()
-    password = getpass.getpass("Password (sent to Bambu only, never stored): ")
-    resp = _request("POST", "/v1/user-service/user/login",
-                    {"account": email, "password": password})
-    token = resp.get("accessToken")
+    password = getpass.getpass(
+        "Password (leave BLANK if you sign in via Google/Apple SSO): ")
+    token = None
+    if password:
+        try:
+            resp = _request("POST", "/v1/user-service/user/login",
+                            {"account": email, "password": password})
+            token = resp.get("accessToken")
+        except urllib.error.HTTPError as e:
+            # Wrong/absent password (e.g. SSO account) — fall through to the
+            # email verification-code flow instead of crashing.
+            print(f"Password login rejected (HTTP {e.code}); "
+                  "trying email verification code instead.")
     if not token:
-        # Account requires the email verification-code flow.
+        # SSO accounts and 2FA-required accounts use the email-code flow.
         print("Requesting email verification code...")
         _request("POST", "/v1/user-service/user/sendemail/code",
                  {"email": email, "type": "codeLogin"})
