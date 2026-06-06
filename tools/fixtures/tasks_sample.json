@@ -19,10 +19,10 @@
       "amsDetailMapping": [
         {
           "ams": 0,
-          "sourceColor": "F4A460FF",
+          "sourceColor": "847D48FF",
           "targetColor": "F4A460FF",
           "filamentId": "GFL96",
-          "filamentType": "PLA-S",
+          "filamentType": "PLA",
           "targetFilamentType": "PLA-S",
           "weight": 9.53
         }
