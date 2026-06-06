@@ -1,0 +1,49 @@
+{
+  "total": 2,
+  "hits": [
+    {
+      "id": 987654321,
+      "designId": 587584,
+      "designTitle": "Mini Articulated Dragon",
+      "title": "Mini Articulated Dragon Magnet Keychain",
+      "cover": "https://example.com/cover1.png",
+      "status": 2,
+      "weight": 9.53,
+      "costTime": 5520,
+      "profileId": 111,
+      "deviceId": "01ABCDEF",
+      "deviceName": "P2S",
+      "deviceModel": "C13",
+      "startTime": "2026-06-01T14:02:11Z",
+      "endTime": "2026-06-01T15:34:11Z",
+      "amsDetailMapping": [
+        {
+          "ams": 0,
+          "sourceColor": "F4A460FF",
+          "targetColor": "F4A460FF",
+          "filamentId": "GFL96",
+          "filamentType": "PLA-S",
+          "targetFilamentType": "PLA-S",
+          "weight": 9.53
+        }
+      ]
+    },
+    {
+      "id": 987654322,
+      "designId": 0,
+      "designTitle": "",
+      "title": "Benchy",
+      "cover": "",
+      "status": 4,
+      "weight": 14.2,
+      "costTime": 3600,
+      "profileId": 0,
+      "deviceId": "01ABCDEF",
+      "deviceName": "P2S",
+      "deviceModel": "C13",
+      "startTime": "2026-06-02T09:00:00Z",
+      "endTime": "2026-06-02T10:00:00Z",
+      "amsDetailMapping": []
+    }
+  ]
+}
