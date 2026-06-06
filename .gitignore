@@ -1,0 +1,5 @@
+# Local design docs / planning notes — contain machine-specific paths, keep off GitHub
+docs/
+
+# Session/agent scratch
+.remember/

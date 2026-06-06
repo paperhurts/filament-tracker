@@ -89,5 +89,3 @@ Pipe it wherever you like and edit `data.js` by hand.
    own inventory, set your `ams` slots (or all `null`), update `printer`.
 2. `python tools/bambu_fetch.py login`
 3. Sync via `/filament-update` (Claude Code) or `tasks` + hand-editing.
-
-Design docs for the whole system live in `docs/superpowers/`.
