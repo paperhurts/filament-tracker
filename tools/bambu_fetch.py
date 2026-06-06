@@ -16,6 +16,7 @@ response and exits non-zero rather than guessing.
 import argparse
 import getpass
 import json
+import os
 import sys
 import urllib.error
 import urllib.request
@@ -71,8 +72,10 @@ def login():
         print("Login failed. Raw response:", file=sys.stderr)
         print(json.dumps(resp, indent=2), file=sys.stderr)
         sys.exit(1)
-    TOKEN_PATH.parent.mkdir(parents=True, exist_ok=True)
-    TOKEN_PATH.write_text(json.dumps({"email": email, "accessToken": token}))
+    TOKEN_PATH.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+    fd = os.open(TOKEN_PATH, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    with os.fdopen(fd, "w") as f:
+        json.dump({"email": email, "accessToken": token}, f)
     print(f"Token cached at {TOKEN_PATH} (valid ~3 months).")
 
 
@@ -111,7 +114,12 @@ def tasks(limit):
         print("No cached token. Run: python tools/bambu_fetch.py login",
               file=sys.stderr)
         sys.exit(EXIT_AUTH)
-    token = json.loads(TOKEN_PATH.read_text())["accessToken"]
+    try:
+        token = json.loads(TOKEN_PATH.read_text())["accessToken"]
+    except (json.JSONDecodeError, KeyError):
+        print("Token cache unreadable. Run: python tools/bambu_fetch.py login",
+              file=sys.stderr)
+        sys.exit(EXIT_AUTH)
     try:
         raw = _request("GET", f"/v1/user-service/my/tasks?limit={limit}",
                        token=token)
