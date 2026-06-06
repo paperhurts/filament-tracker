@@ -28,8 +28,10 @@ Run: `python tools/bambu_fetch.py tasks`
 
 ### 2. Diff
 New prints = fetched tasks whose `taskId` does not appear in any `printLog` entry's
-`taskId` field. (Pre-agent entries have no `taskId`; additionally skip any task whose
-date+title matches an existing entry, to avoid double-logging the backfill boundary.)
+`taskIds` array (agent entries group multi-plate prints, so one entry may carry many
+task ids). Pre-agent entries (no `taskIds`) and the 2026-04 backfill boundary are
+already covered — anything older than the newest `taskIds`-bearing entry that doesn't
+match is suspect: ask, don't relog.
 Sort oldest-first. If the oldest fetched task is more than 1 day newer than the newest
 `printLog` date, warn the user that Bambu's ~90-day window may have dropped history.
 
@@ -48,18 +50,25 @@ a new entry following existing conventions — id like `pla-<color>-r` (refill) 
 `pla-<color>-s` (spool), `notes` recording the order number, real `costPerSpool`.
 
 ### 5. Spool math
-For each new print, map its filament (color hex + material type) to a spool id:
-- Compare the task's filament color to spool `color` hex values and material
+For each new print, map its filament (`color` = targetColor, what the AMS actually
+fed — NOT `sourceColor`, the designer's intent) to a spool id:
+- Match the task's filament color against spool `rfidColor` first (exact, set from
+  real AMS data) then fall back to the display `color` hex and material
   (`PLA-S`→"PLA Silk", `PLA`→"PLA", `PETG`→"PETG", translucent/glow per spool name).
+  When a fallback match is confirmed, store the hex as that spool's `rfidColor`.
 - Subtract the print's grams from that spool's `remainingG`.
 - AMBIGUOUS (two spools same color, color not in inventory, remainingG would go
   negative) → ask the user. Going negative usually means a refill was loaded:
   confirm, zero out / retire the empty, start decrementing the refill (refill becomes
   spoolType "spool" in use, or per user preference — ask the first time).
+- When a unit is fully consumed: decrement `qty`, increment `emptied` (Invested on the
+  dashboard counts `qty + emptied`, so lifetime spend never shrinks).
 - If a spool that is loaded in the `ams` array is retired, renamed, or swapped, update
   the `ams` array entry to the in-use spool id (or `null` if the slot is now empty).
-- Add `taskId`, `materialUsedId`, `filamentUsedG` to each new printLog entry,
-  matching the existing entry format exactly.
+- Add `taskIds` (array), `materialUsedId`, `filamentUsedG` to each new printLog
+  entry, matching the existing entry format exactly. Group multi-plate prints of the
+  same design into one entry (plates/colors in notes); cancelled plates get their own
+  `status: "failed"` row.
 - Remove a spool's "⚠ Remaining is stale" note once reconciled.
 
 ### 6. Update data.js
@@ -72,9 +81,10 @@ For each new print, map its filament (color hex + material type) to a spool id:
 - Sanity script (note: `new Function`, not `eval` — `const` declarations inside
   `eval()` don't leak to the outer scope in modern Node):
   every `printLog[].materialUsedId` exists in `spools[].id`; every non-null `ams` entry
-  exists in `spools[].id`; no `remainingG < 0`; no duplicate `taskId`; `lastUpdated` is today.
+  exists in `spools[].id`; no `remainingG < 0`; no duplicate task id across all
+  `taskIds` arrays; `lastUpdated` is today.
   Run:
-  `node -e "const src=require('fs').readFileSync('data.js','utf8'); const d=new Function(src+'; return INVENTORY_DATA;')(); const ids=new Set(d.spools.map(s=>s.id)); const bad=d.printLog.filter(p=>p.materialUsedId&&!ids.has(p.materialUsedId)); const amsBad=(d.ams||[]).filter(a=>a&&!ids.has(a)); const neg=d.spools.filter(s=>s.remainingG<0); const tids=d.printLog.map(p=>p.taskId).filter(Boolean); const dup=tids.length!==new Set(tids).size; if(bad.length||amsBad.length||neg.length||dup){console.error('FAIL',{bad:bad.map(p=>p.name),amsBad,neg:neg.map(s=>s.id),dup});process.exit(1)} console.log('data.js OK')"`
+  `node -e "const src=require('fs').readFileSync('data.js','utf8'); const d=new Function(src+'; return INVENTORY_DATA;')(); const ids=new Set(d.spools.map(s=>s.id)); const bad=d.printLog.filter(p=>p.materialUsedId&&!ids.has(p.materialUsedId)); const amsBad=(d.ams||[]).filter(a=>a&&!ids.has(a)); const neg=d.spools.filter(s=>s.remainingG<0); const tids=d.printLog.flatMap(p=>p.taskIds||(p.taskId?[p.taskId]:[])); const dup=tids.length!==new Set(tids).size; if(bad.length||amsBad.length||neg.length||dup){console.error('FAIL',{bad:bad.map(p=>p.name),amsBad,neg:neg.map(s=>s.id),dup});process.exit(1)} console.log('data.js OK')"`
 - If anything fails: fix or revert `data.js` (`git checkout -- data.js`) — never commit a failing state.
 
 ### 8. Ship
