@@ -394,7 +394,7 @@ function computeStats(data) {
   const spools = data.spools.filter(s => s.material !== "Mystery");
   const totalSpools = spools.reduce((sum, s) => sum + s.qty, 0);
   const totalWeightKg = spools.reduce((sum, s) => sum + (s.remainingG * s.qty), 0) / 1000;
-  const totalCost = data.spools.reduce((sum, s) => sum + (s.costPerSpool * s.qty), 0);
+  const totalCost = data.spools.reduce((sum, s) => sum + (s.costPerSpool * (s.qty + (s.emptied || 0))), 0); // emptied units still count toward Invested
   const materials = {};
   spools.forEach(s => {
     if (!materials[s.material]) materials[s.material] = { count: 0, weightG: 0 };
