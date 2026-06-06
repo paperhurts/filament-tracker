@@ -18,6 +18,9 @@ only — never edit data into it. Spec: `docs/superpowers/specs/2026-06-06-filam
 ## Workflow
 
 ### 1. Fetch
+Precondition: `git status --short data.js` must be clean. If data.js has uncommitted
+changes, stop and ask the user before proceeding (a mid-run revert would destroy them).
+
 Run: `python tools/bambu_fetch.py tasks`
 - Exit 3 → token missing/expired. Tell the user to run `! python tools/bambu_fetch.py login`
   in the prompt (interactive: password + email code), then re-fetch.
@@ -53,6 +56,8 @@ For each new print, map its filament (color hex + material type) to a spool id:
   negative) → ask the user. Going negative usually means a refill was loaded:
   confirm, zero out / retire the empty, start decrementing the refill (refill becomes
   spoolType "spool" in use, or per user preference — ask the first time).
+- If a spool that is loaded in the `ams` array is retired, renamed, or swapped, update
+  the `ams` array entry to the in-use spool id (or `null` if the slot is now empty).
 - Add `taskId`, `materialUsedId`, `filamentUsedG` to each new printLog entry,
   matching the existing entry format exactly.
 - Remove a spool's "⚠ Remaining is stale" note once reconciled.
@@ -60,16 +65,16 @@ For each new print, map its filament (color hex + material type) to a spool id:
 ### 6. Update data.js
 - Append new printLog entries (keep the file's existing formatting style).
 - Update spool `remainingG` / `qty` / notes.
-- Set `lastUpdated` to today (YYYY-MM-DD).
+- Set `lastUpdated` to today (YYYY-MM-DD) — get today from the system clock (e.g. run `date`), never guess it.
 
 ### 7. Validate (all must pass before commit)
 - `node --check data.js` → exit 0.
 - Sanity script (note: `new Function`, not `eval` — `const` declarations inside
   `eval()` don't leak to the outer scope in modern Node):
-  every `printLog[].materialUsedId` exists in `spools[].id`; no `remainingG < 0`;
-  no duplicate `taskId`; `lastUpdated` is today.
+  every `printLog[].materialUsedId` exists in `spools[].id`; every non-null `ams` entry
+  exists in `spools[].id`; no `remainingG < 0`; no duplicate `taskId`; `lastUpdated` is today.
   Run:
-  `node -e "const src=require('fs').readFileSync('data.js','utf8'); const d=new Function(src+'; return INVENTORY_DATA;')(); const ids=new Set(d.spools.map(s=>s.id)); const bad=d.printLog.filter(p=>p.materialUsedId&&!ids.has(p.materialUsedId)); const neg=d.spools.filter(s=>s.remainingG<0); const tids=d.printLog.map(p=>p.taskId).filter(Boolean); const dup=tids.length!==new Set(tids).size; if(bad.length||neg.length||dup){console.error('FAIL',{bad:bad.map(p=>p.name),neg:neg.map(s=>s.id),dup});process.exit(1)} console.log('data.js OK')"`
+  `node -e "const src=require('fs').readFileSync('data.js','utf8'); const d=new Function(src+'; return INVENTORY_DATA;')(); const ids=new Set(d.spools.map(s=>s.id)); const bad=d.printLog.filter(p=>p.materialUsedId&&!ids.has(p.materialUsedId)); const amsBad=(d.ams||[]).filter(a=>a&&!ids.has(a)); const neg=d.spools.filter(s=>s.remainingG<0); const tids=d.printLog.map(p=>p.taskId).filter(Boolean); const dup=tids.length!==new Set(tids).size; if(bad.length||amsBad.length||neg.length||dup){console.error('FAIL',{bad:bad.map(p=>p.name),amsBad,neg:neg.map(s=>s.id),dup});process.exit(1)} console.log('data.js OK')"`
 - If anything fails: fix or revert `data.js` (`git checkout -- data.js`) — never commit a failing state.
 
 ### 8. Ship
