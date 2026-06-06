@@ -108,8 +108,12 @@ def normalize_tasks(raw):
             "designTitle": h.get("designTitle"),
             "filaments": [
                 {
-                    "type": f.get("filamentType"),
-                    "color": f.get("sourceColor"),
+                    # target* = what the AMS actually fed; source* = the
+                    # designer's intent in the downloaded project file.
+                    # Spool matching must use the target values.
+                    "type": f.get("targetFilamentType") or f.get("filamentType"),
+                    "color": f.get("targetColor") or f.get("sourceColor"),
+                    "sourceColor": f.get("sourceColor"),
                     "weightG": f.get("weight"),
                 }
                 for f in (h.get("amsDetailMapping") or [])

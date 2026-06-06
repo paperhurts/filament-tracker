@@ -25,11 +25,14 @@ class NormalizeTasksTest(unittest.TestCase):
         self.assertEqual(t["startTime"], "2026-06-01T14:02:11Z")
         self.assertEqual(t["rawStatus"], 2)
 
-    def test_maps_filaments(self):
+    def test_maps_filaments_preferring_target_over_source(self):
+        # Fixture hit 1 simulates a remapped print: the downloaded project
+        # wanted olive (source), the AMS actually fed silk (target).
         t = bambu_fetch.normalize_tasks(self.raw)[0]
         self.assertEqual(
             t["filaments"],
-            [{"type": "PLA-S", "color": "F4A460FF", "weightG": 9.53}],
+            [{"type": "PLA-S", "color": "F4A460FF",
+              "sourceColor": "847D48FF", "weightG": 9.53}],
         )
 
     def test_empty_filaments_and_unknown_status(self):
