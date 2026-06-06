@@ -414,7 +414,7 @@
 ═══════════════════════════════════════════════════════════════════ -->
 <script>
 const INVENTORY_DATA = {
-  lastUpdated: "2026-04-28",
+  lastUpdated: "2026-05-16",
   printer: "Bambu Lab P2S + AMS",
 
   // Which spool IDs are loaded in AMS slots 1-4 (null = empty)
@@ -443,33 +443,70 @@ const INVENTORY_DATA = {
   ],
 
   spools: [
-    // ── PLA Basic (Refills) — Order 1 ──
-    { id: "pla-purple", name: "Purple", material: "PLA", color: "#7B2D8E", sku: "10700", spoolType: "refill", weightG: 1000, remainingG: 1000, costPerSpool: 12.99, qty: 1, notes: "" },
-    { id: "pla-turquoise", name: "Turquoise", material: "PLA", color: "#40C9B0", sku: "10605", spoolType: "refill", weightG: 1000, remainingG: 1000, costPerSpool: 12.99, qty: 1, notes: "" },
-    { id: "pla-yellow-refill", name: "Yellow", material: "PLA", color: "#FFD700", sku: "10400", spoolType: "refill", weightG: 1000, remainingG: 1000, costPerSpool: 13.00, qty: 2, notes: "" },
+    // ══════════════════════════════════════════════
+    // PLA BASIC — REFILLS
+    // ══════════════════════════════════════════════
+    // Order 1
+    { id: "pla-purple-r", name: "Purple", material: "PLA", color: "#7B2D8E", sku: "10700", spoolType: "refill", weightG: 1000, remainingG: 1000, costPerSpool: 12.99, qty: 1, notes: "Order 1" },
+    { id: "pla-turquoise-r", name: "Turquoise", material: "PLA", color: "#40C9B0", sku: "10605", spoolType: "refill", weightG: 1000, remainingG: 1000, costPerSpool: 12.99, qty: 1, notes: "Order 1" },
+    { id: "pla-yellow-r", name: "Yellow", material: "PLA", color: "#FFD700", sku: "10400", spoolType: "refill", weightG: 1000, remainingG: 1000, costPerSpool: 13.00, qty: 2, notes: "Order 1" },
+    // Orders 3-5 refills
+    { id: "pla-jade-white-r", name: "Jade White", material: "PLA", color: "#E8E4D9", sku: "10100", spoolType: "refill", weightG: 1000, remainingG: 1000, costPerSpool: 12.99, qty: 3, notes: "1× Order 3, 2× Order 5" },
+    { id: "pla-black-r", name: "Black", material: "PLA", color: "#1a1a1a", sku: "10101", spoolType: "refill", weightG: 1000, remainingG: 1000, costPerSpool: 12.99, qty: 2, notes: "Order 5" },
+    { id: "pla-maroon-red-r", name: "Maroon Red", material: "PLA", color: "#800020", sku: "10205", spoolType: "refill", weightG: 1000, remainingG: 1000, costPerSpool: 12.99, qty: 1, notes: "Order 3" },
+    { id: "pla-brown-r", name: "Brown", material: "PLA", color: "#6D4C30", sku: "10800", spoolType: "refill", weightG: 1000, remainingG: 1000, costPerSpool: 12.99, qty: 1, notes: "Order 3" },
+    { id: "pla-beige-r", name: "Beige", material: "PLA", color: "#D4C5A9", sku: "10201", spoolType: "refill", weightG: 1000, remainingG: 1000, costPerSpool: 12.99, qty: 3, notes: "1× Order 3, 2× Order 5" },
+    { id: "pla-bronze-r", name: "Bronze", material: "PLA", color: "#8B6914", sku: "10801", spoolType: "refill", weightG: 1000, remainingG: 1000, costPerSpool: 13.99, qty: 1, notes: "Order 4" },
+    { id: "pla-silver-r", name: "Silver", material: "PLA", color: "#A8A9AD", sku: "10102", spoolType: "refill", weightG: 1000, remainingG: 1000, costPerSpool: 13.99, qty: 1, notes: "Order 4" },
+    { id: "pla-blue-grey-r", name: "Blue Grey", material: "PLA", color: "#7A8B99", sku: "10602", spoolType: "refill", weightG: 1000, remainingG: 1000, costPerSpool: 13.99, qty: 1, notes: "Order 4" },
+    { id: "pla-pink-r", name: "Pink", material: "PLA", color: "#F48FB1", sku: "10203", spoolType: "refill", weightG: 1000, remainingG: 1000, costPerSpool: 13.99, qty: 1, notes: "Order 4" },
+    { id: "pla-cobalt-blue-r", name: "Cobalt Blue", material: "PLA", color: "#0047AB", sku: "10604", spoolType: "refill", weightG: 1000, remainingG: 1000, costPerSpool: 13.99, qty: 2, notes: "Order 4" },
+    { id: "pla-bright-green-r", name: "Bright Green", material: "PLA", color: "#39B54A", sku: "10503", spoolType: "refill", weightG: 1000, remainingG: 1000, costPerSpool: 12.99, qty: 1, notes: "Order 5" },
+    { id: "pla-pumpkin-orange-r", name: "Pumpkin Orange", material: "PLA", color: "#E8751A", sku: "10301", spoolType: "refill", weightG: 1000, remainingG: 1000, costPerSpool: 12.99, qty: 2, notes: "Order 5" },
 
-    // ── PLA Basic (Spools) ──
-    { id: "pla-jade-white", name: "Jade White", material: "PLA", color: "#E8E4D9", sku: "10100", spoolType: "spool", weightG: 1000, remainingG: 375, costPerSpool: 14.94, qty: 3, notes: "1st spool ~375g left. 2 fresh from Order 2." },
-    { id: "pla-black", name: "Black", material: "PLA", color: "#1a1a1a", sku: "10101", spoolType: "spool", weightG: 1000, remainingG: 87, costPerSpool: 14.94, qty: 3, notes: "1st spool nearly empty (~87g). 2 fresh from Order 2." },
-    { id: "pla-bambu-green", name: "Bambu Green", material: "PLA", color: "#00A651", sku: "10501", spoolType: "spool", weightG: 1000, remainingG: 1000, costPerSpool: 14.95, qty: 2, notes: "" },
-    { id: "pla-cyan", name: "Cyan", material: "PLA", color: "#00BCD4", sku: "10603", spoolType: "spool", weightG: 1000, remainingG: 871, costPerSpool: 14.95, qty: 2, notes: "1st spool ~871g. Sea Emperor + organizer pegs." },
-    { id: "pla-red", name: "Red", material: "PLA", color: "#D32F2F", sku: "10200", spoolType: "spool", weightG: 1000, remainingG: 807, costPerSpool: 14.95, qty: 2, notes: "1st spool ~807g. Ghostbuster, Grim Reaper, Sea Dragon." },
-    { id: "pla-pumpkin-orange", name: "Pumpkin Orange", material: "PLA", color: "#E8751A", sku: "10301", spoolType: "spool", weightG: 1000, remainingG: 1000, costPerSpool: 14.94, qty: 1, notes: "Order 2 — Apr 18" },
+    // ══════════════════════════════════════════════
+    // PLA BASIC — SPOOLS
+    // ══════════════════════════════════════════════
+    { id: "pla-jade-white-s", name: "Jade White", material: "PLA", color: "#E8E4D9", sku: "10100", spoolType: "spool", weightG: 1000, remainingG: 375, costPerSpool: 14.94, qty: 3, notes: "3× spool (Orders 1+2). 1st ~375g remain. ⚠ Remaining is stale — print log behind." },
+    { id: "pla-black-s", name: "Black", material: "PLA", color: "#1a1a1a", sku: "10101", spoolType: "spool", weightG: 1000, remainingG: 87, costPerSpool: 14.94, qty: 4, notes: "4× spool (Orders 1+2+3). 1st ~87g/empty. ⚠ Remaining is stale." },
+    { id: "pla-bambu-green-s", name: "Bambu Green", material: "PLA", color: "#00A651", sku: "10501", spoolType: "spool", weightG: 1000, remainingG: 1000, costPerSpool: 14.95, qty: 2, notes: "Order 1" },
+    { id: "pla-cyan-s", name: "Cyan", material: "PLA", color: "#00BCD4", sku: "10603", spoolType: "spool", weightG: 1000, remainingG: 871, costPerSpool: 14.95, qty: 2, notes: "Order 1. 1st ~871g. ⚠ Remaining is stale." },
+    { id: "pla-red-s", name: "Red", material: "PLA", color: "#D32F2F", sku: "10200", spoolType: "spool", weightG: 1000, remainingG: 807, costPerSpool: 14.95, qty: 2, notes: "Order 1. 1st ~807g. ⚠ Remaining is stale." },
+    { id: "pla-pumpkin-orange-s", name: "Pumpkin Orange", material: "PLA", color: "#E8751A", sku: "10301", spoolType: "spool", weightG: 1000, remainingG: 1000, costPerSpool: 14.94, qty: 1, notes: "Order 2" },
+    { id: "pla-indigo-purple-s", name: "Indigo Purple", material: "PLA", color: "#4B0082", sku: "10701", spoolType: "spool", weightG: 1000, remainingG: 1000, costPerSpool: 14.94, qty: 1, notes: "Order 3" },
+    { id: "pla-gray-s", name: "Gray", material: "PLA", color: "#808080", sku: "10103", spoolType: "spool", weightG: 1000, remainingG: 1000, costPerSpool: 14.94, qty: 4, notes: "1× Order 3, 3× Order 5" },
+    { id: "pla-mistletoe-green-s", name: "Mistletoe Green", material: "PLA", color: "#2E6B4F", sku: "10502", spoolType: "spool", weightG: 1000, remainingG: 1000, costPerSpool: 14.94, qty: 1, notes: "Order 3" },
+    { id: "pla-cocoa-brown-s", name: "Cocoa Brown", material: "PLA", color: "#5C3317", sku: "10802", spoolType: "spool", weightG: 1000, remainingG: 1000, costPerSpool: 14.94, qty: 2, notes: "1× Order 3, 1× Order 5" },
+    { id: "pla-sunflower-yellow-s", name: "Sunflower Yellow", material: "PLA", color: "#FFB300", sku: "10402", spoolType: "spool", weightG: 1000, remainingG: 1000, costPerSpool: 16.09, qty: 1, notes: "Order 4" },
 
-    // ── PLA Silk ──
-    { id: "pla-silk-dawn", name: "Dawn Radiance", material: "PLA Silk", color: "linear-gradient(135deg, #F4A460, #DAA520, #E8C07A, #CD853F)", sku: "13912", spoolType: "spool", weightG: 1000, remainingG: 571, costPerSpool: 24.99, qty: 1, notes: "Multi-color silk" },
+    // ══════════════════════════════════════════════
+    // PLA TRANSLUCENT
+    // ══════════════════════════════════════════════
+    { id: "pla-trans-light-jade", name: "Light Jade", material: "PLA Translucent", color: "#A8E6CF", sku: "13510", spoolType: "spool", weightG: 1000, remainingG: 1000, costPerSpool: 14.94, qty: 1, notes: "Order 3. For D&D kit + lamp projects." },
 
-    // ── PETG Basic ──
+    // ══════════════════════════════════════════════
+    // PLA GLOW
+    // ══════════════════════════════════════════════
+    { id: "pla-glow-green", name: "Glow Green", material: "PLA Glow", color: "#76FF7A", sku: "15500", spoolType: "spool", weightG: 1000, remainingG: 1000, costPerSpool: 24.99, qty: 1, notes: "Order 4. External spool only — NOT AMS compatible. For D&D kit." },
+
+    // ══════════════════════════════════════════════
+    // PLA SILK
+    // ══════════════════════════════════════════════
+    { id: "pla-silk-dawn", name: "Dawn Radiance", material: "PLA Silk", color: "linear-gradient(135deg, #F4A460, #DAA520, #E8C07A, #CD853F)", sku: "13912", spoolType: "spool", weightG: 1000, remainingG: 571, costPerSpool: 24.99, qty: 1, notes: "Multi-color silk. ⚠ Remaining is stale." },
+
+    // ══════════════════════════════════════════════
+    // PETG
+    // ══════════════════════════════════════════════
     { id: "petg-white", name: "White", material: "PETG", color: "#F0F0F0", sku: "30106", spoolType: "spool", weightG: 1000, remainingG: 1000, costPerSpool: 14.94, qty: 1, notes: "" },
     { id: "petg-black", name: "Black", material: "PETG", color: "#1a1a1a", sku: "30105", spoolType: "spool", weightG: 1000, remainingG: 1000, costPerSpool: 14.94, qty: 1, notes: "" },
     { id: "petg-blue", name: "Reflex Blue", material: "PETG", color: "#1939B7", sku: "30603", spoolType: "spool", weightG: 1000, remainingG: 1000, costPerSpool: 14.94, qty: 1, notes: "" },
     { id: "petg-yellow", name: "Yellow", material: "PETG", color: "#FFC107", sku: "30402", spoolType: "spool", weightG: 1000, remainingG: 1000, costPerSpool: 14.94, qty: 1, notes: "" },
     { id: "petg-red", name: "Red", material: "PETG", color: "#C62828", sku: "30201", spoolType: "spool", weightG: 1000, remainingG: 1000, costPerSpool: 14.94, qty: 1, notes: "" },
+    { id: "petg-clear", name: "Clear", material: "PETG", color: "#c8ddf0", sku: "32101", spoolType: "spool", weightG: 1000, remainingG: 1000, costPerSpool: 14.94, qty: 1, notes: "Order 2. Translucent — for lamp/light projects." },
 
-    // ── PETG Translucent ──
-    { id: "petg-clear", name: "Clear", material: "PETG", color: "#c8ddf0", sku: "32101", spoolType: "spool", weightG: 1000, remainingG: 1000, costPerSpool: 14.94, qty: 1, notes: "Order 2 — Apr 18. Translucent — perfect for lamp/light projects." },
-
-    // ── Mystery Box ──
+    // ══════════════════════════════════════════════
+    // MYSTERY BOX
+    // ══════════════════════════════════════════════
     { id: "mystery-laser", name: "Laser Mystery Box", material: "Mystery", color: "linear-gradient(135deg, #a371f7, #58a6ff, #a371f7)", sku: "mystery", spoolType: "spool", weightG: 0, remainingG: 0, costPerSpool: 39.99, qty: 1, notes: "Plywood/Acrylic/PU/Metal — contents TBD" },
   ]
 };
@@ -530,7 +567,7 @@ function renderDashboard() {
 
   // Group spools by material
   const groups = {};
-  const materialOrder = ['PLA', 'PETG', 'PLA Silk', 'Mystery'];
+  const materialOrder = ['PLA', 'PETG', 'PLA Silk', 'PLA Translucent', 'PLA Glow', 'Mystery'];
   data.spools.forEach(s => {
     if (!groups[s.material]) groups[s.material] = [];
     groups[s.material].push(s);
@@ -541,7 +578,7 @@ function renderDashboard() {
     .filter(m => groups[m])
     .map(material => {
       const spools = groups[material];
-      const badgeClass = material === 'PLA' ? 'pla' : material === 'PETG' ? 'petg' : material === 'PLA Silk' ? 'silk' : 'mystery';
+      const badgeClass = material === 'PLA' ? 'pla' : material === 'PETG' ? 'petg' : material === 'PLA Silk' ? 'silk' : material === 'PLA Translucent' ? 'silk' : material === 'PLA Glow' ? 'pla' : 'mystery';
       const totalQty = spools.reduce((s, sp) => s + sp.qty, 0);
       return `<div class="material-group">
         <div class="material-group-header">
@@ -575,8 +612,8 @@ function renderDashboard() {
     }).join('');
 
   // ── Charts ──
-  const matGroupColors = { PLA: '#58a6ff', PETG: '#da7756', 'PLA Silk': '#d4a853' };
-  const chartMaterialOrder = ['PLA', 'PLA Silk', 'PETG'];
+  const matGroupColors = { PLA: '#58a6ff', PETG: '#da7756', 'PLA Silk': '#d4a853', 'PLA Translucent': '#a8e6cf', 'PLA Glow': '#76ff7a' };
+  const chartMaterialOrder = ['PLA', 'PLA Silk', 'PLA Translucent', 'PLA Glow', 'PETG'];
 
   // === INVENTORY DONUT — each color = slice, grouped by material outline ===
   const invSlices = [];
@@ -798,7 +835,7 @@ function renderDashboard() {
 
   // === STOCK BAR CHARTS — per material type ===
   const stockContainer = document.getElementById('stock-charts');
-  const stockMaterialOrder = ['PLA', 'PLA Silk', 'PETG'];
+  const stockMaterialOrder = ['PLA', 'PLA Silk', 'PLA Translucent', 'PLA Glow', 'PETG'];
 
   stockMaterialOrder.forEach(material => {
     const matSpools = data.spools
