@@ -32,7 +32,7 @@
 ═══════════════════════════════════════════════════════════════════
 */
 const INVENTORY_DATA = {
-  lastUpdated: "2026-06-06",
+  lastUpdated: "2026-06-08",
   printer: "Bambu Lab P2S + AMS",
 
   // Which spool IDs are loaded in AMS slots 1-4 (null = empty)
@@ -87,6 +87,7 @@ const INVENTORY_DATA = {
     { date: "2026-05-27", name: "Flexible Armrest Organizer (HSW)", url: "https://makerworld.com/en/models/926221", material: "PLA", materialUsedId: "pla-turquoise-r", filamentUsedG: 62.49, status: "success", notes: "", warnings: [], taskIds: [977932581] },
     { date: "2026-05-30", name: "Zen Fountian", url: "https://makerworld.com/en/models/1388090", material: "PLA", materialUsedId: "pla-indigo-purple-s", filamentUsedG: 604.88, status: "success", notes: "3 plates. Colors: Indigo Purple 238.1g, Yellow 184.7g, Turquoise 182.1g.", warnings: [], taskIds: [984957735, 986111139, 986694385] },
     { date: "2026-05-31", name: "Eco Filament Poop Bin - X1C, P1P, P1S, P2S and X2D", url: "https://makerworld.com/en/models/714868", material: "PLA", materialUsedId: "pla-black-r", filamentUsedG: 221.52, status: "success", notes: "", warnings: [], taskIds: [988089591] },
+    { date: "2026-06-07", name: "Dice Tower Castle Stairs", url: "https://makerworld.com/en/models/509299", material: "PLA", materialUsedId: "pla-black-r", filamentUsedG: 157.23, status: "success", notes: "Came out awesome. Emptied the open black refill mid-print; opened the sealed one.", warnings: [], taskIds: [1004038993] },
   ],
 
   spools: [
@@ -99,7 +100,7 @@ const INVENTORY_DATA = {
     { id: "pla-yellow-r", name: "Yellow", material: "PLA", color: "#FFD700", rfidColor: "F4EE2A", sku: "10400", spoolType: "refill", weightG: 1000, remainingG: 609, costPerSpool: 13.00, qty: 2, notes: "Order 1. 1× open + 1× sealed." },
     // Orders 3-5 refills
     { id: "pla-jade-white-r", name: "Jade White", material: "PLA", color: "#E8E4D9", rfidColor: "FFFFFF", sku: "10100", spoolType: "refill", weightG: 1000, remainingG: 555, costPerSpool: 12.99, qty: 2, emptied: 1, notes: "1× open + 1× sealed (Orders 3+5). 1st refill emptied 2026-05." },
-    { id: "pla-black-r", name: "Black", material: "PLA", color: "#1a1a1a", rfidColor: "000000", sku: "10101", spoolType: "refill", weightG: 1000, remainingG: 129, costPerSpool: 12.99, qty: 2, notes: "1× open + 1× sealed (Order 5)." },
+    { id: "pla-black-r", name: "Black", material: "PLA", color: "#1a1a1a", rfidColor: "000000", sku: "10101", spoolType: "refill", weightG: 1000, remainingG: 972, costPerSpool: 12.99, qty: 1, emptied: 1, notes: "1× open (sealed one opened 2026-06-07 mid Dice Tower). Order 5." },
     { id: "pla-maroon-red-r", name: "Maroon Red", material: "PLA", color: "#800020", sku: "10205", spoolType: "refill", weightG: 1000, remainingG: 1000, costPerSpool: 12.99, qty: 1, notes: "Order 3" },
     { id: "pla-brown-r", name: "Brown", material: "PLA", color: "#6D4C30", rfidColor: "6F5034", sku: "10800", spoolType: "refill", weightG: 1000, remainingG: 855, costPerSpool: 12.99, qty: 1, notes: "Order 3. Open." },
     { id: "pla-beige-r", name: "Beige", material: "PLA", color: "#D4C5A9", sku: "10201", spoolType: "refill", weightG: 1000, remainingG: 1000, costPerSpool: 12.99, qty: 3, notes: "1× Order 3, 2× Order 5" },
