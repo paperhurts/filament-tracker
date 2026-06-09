@@ -3,3 +3,5 @@ docs/
 
 # Session/agent scratch
 .remember/
+.tmp_orig_comment.txt
+tools/__pycache__/
