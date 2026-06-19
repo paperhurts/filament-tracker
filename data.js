@@ -32,7 +32,7 @@
 ═══════════════════════════════════════════════════════════════════
 */
 const INVENTORY_DATA = {
-  lastUpdated: "2026-06-09",
+  lastUpdated: "2026-06-19",
   printer: "Bambu Lab P2S + AMS",
 
   // Which spool IDs are loaded in AMS slots 1-4 (null = empty)
@@ -90,6 +90,20 @@ const INVENTORY_DATA = {
     { date: "2026-06-07", name: "Dice Tower Castle Stairs", url: "https://makerworld.com/en/models/509299", material: "PLA", materialUsedId: "pla-black-r", filamentUsedG: 157.23, status: "success", notes: "Came out awesome.", warnings: [], taskIds: [1004038993] },
     { date: "2026-06-08", name: "Zombicide Tile Edge System V2 - Reworked & Fixes", url: "https://makerworld.com/en/models/2689537", material: "PLA", materialUsedId: "pla-black-r", filamentUsedG: 304.27, status: "success", notes: "Printed 2026-06-07 → 2026-06-08. 4 plates. Colors: Black 195.3g, Yellow 109.0g. Ran out of black mid-job — swapped to the sealed refill.", warnings: [], taskIds: [1005546548, 1006611640, 1007379899, 1007998853] },
     { date: "2026-06-08", name: "Zombicide Tile Edge System V2 — cancelled plate", url: "https://makerworld.com/en/models/2689537", material: "PLA", materialUsedId: "pla-black-r", filamentUsedG: 0, status: "failed", notes: "Cancelled right after start: ran out of black, swapped refill, restarted (filament swaps always cause issues — barely any filament used).", warnings: [], taskIds: [1006810083] },
+    { date: "2026-06-09", name: "Zombicide's Second Edition card holder", url: "https://makerworld.com/en/models/1061205", material: "PLA", materialUsedId: "pla-black-r", filamentUsedG: 188.19, status: "success", notes: "Colors: Black 185.6g, White 2.6g.", warnings: [], taskIds: [1010116674] },
+    { date: "2026-06-11", name: "Wall System for Zombicide", url: "https://makerworld.com/en/models/1072976", material: "PLA", materialUsedId: "pla-gray-s", filamentUsedG: 172.61, status: "success", notes: "Printed 2026-06-10 → 2026-06-11. 3 plates, all Gray.", warnings: [], taskIds: [1012650810, 1013704646, 1015022427] },
+    { date: "2026-06-12", name: "Tiny Comodo Dragon", url: "https://makerworld.com/en/models/2742796", material: "PLA", materialUsedId: "pla-gray-s", filamentUsedG: 84.3, status: "success", notes: "Colors: Gray 61.0g, Yellow 9.5g, White 8.1g, Black 5.8g.", warnings: [], taskIds: [1015369235] },
+    { date: "2026-06-12", name: "Highland Cow Wall Decor", url: "https://makerworld.com/en/models/701274", material: "PLA", materialUsedId: "pla-black-r", filamentUsedG: 66.62, status: "success", notes: "Colors: Black 43.3g, White 23.3g.", warnings: [], taskIds: [1017395981] },
+    { date: "2026-06-13", name: "GripFix Bedsheet Tensioner V2", url: "https://makerworld.com/en/models/1761845", material: "PLA", materialUsedId: "pla-jade-white-r", filamentUsedG: 143.18, status: "success", notes: "Printed in White.", warnings: [], taskIds: [1017817535] },
+    { date: "2026-06-14", name: "Dice Tower Castle Stairs", url: "https://makerworld.com/en/models/509299", material: "PLA Silk", materialUsedId: "pla-silk-dawn", filamentUsedG: 345.8, status: "success", notes: "Printed 2026-06-13 → 2026-06-14 in Dawn Radiance rainbow silk. Came out gorgeous.", warnings: [], taskIds: [1019669893] },
+    { date: "2026-06-14", name: "Cute Leviathan | Mythical Sea Serpent", url: "https://makerworld.com/en/models/2765934", material: "PLA Silk", materialUsedId: "pla-silk-dawn", filamentUsedG: 52.12, status: "success", notes: "Colors: Dawn silk 39.1g, Black 13.0g.", warnings: [], taskIds: [1022037728] },
+    { date: "2026-06-15", name: "Cute Articulated Collector Leviathan (Subnautica2) — cancelled", url: "https://makerworld.com/en/models/2830510", material: "PLA Silk", materialUsedId: "pla-silk-dawn", filamentUsedG: 0, status: "failed", notes: "Cancelled almost immediately — barely any filament used.", warnings: [], taskIds: [1023908789] },
+    { date: "2026-06-16", name: "Cute Leviathan | Mythical Sea Serpent", url: "https://makerworld.com/en/models/2765934", material: "PLA Silk", materialUsedId: "pla-silk-dawn", filamentUsedG: 81.82, status: "success", notes: "Printed 2026-06-15 → 2026-06-16. Colors: Dawn silk 61.9g, Black 20.0g.", warnings: [], taskIds: [1024272829] },
+    { date: "2026-06-16", name: "Articulated Ghost Leviathan - Subnautica — cancelled", url: "https://makerworld.com/en/models/572236", material: "PLA", materialUsedId: "pla-cyan-s", filamentUsedG: 0, status: "failed", notes: "Cancelled almost immediately — barely any filament used.", warnings: [], taskIds: [1026515254] },
+    { date: "2026-06-17", name: "Articulated Dragonfly (蜻蜓双色 MINI)", url: "https://makerworld.com/en/models/1454533", material: "PLA", materialUsedId: "pla-black-r", filamentUsedG: 43.26, status: "success", notes: "Colors: Black 26.8g, White 16.5g.", warnings: [], taskIds: [1027718773] },
+    { date: "2026-06-18", name: "Zombicide 'undead or alive' Balcony", url: "https://makerworld.com/en/models/423587", material: "PLA", materialUsedId: "pla-gray-s", filamentUsedG: 89.9, status: "success", notes: "Printed 2026-06-17 → 2026-06-18. 4 plates, all Gray.", warnings: [], taskIds: [1028347771, 1028898603, 1029295881, 1031218647] },
+    { date: "2026-06-18", name: "Articulated Praying Mantis!", url: "https://makerworld.com/en/models/976972", material: "PLA Glow", materialUsedId: "pla-glow-green", filamentUsedG: 120.76, status: "success", notes: "Colors: Glow-in-the-dark green 81.7g, Pumpkin Orange 27.5g, Black 11.6g.", warnings: [], taskIds: [1031522401] },
+    { date: "2026-06-19", name: "Articulated Dolphin — failed", url: "https://makerworld.com/en/models/131099", material: "PLA", materialUsedId: "pla-blue-grey-r", filamentUsedG: 0, status: "failed", notes: "Failed ~9 seconds in (two dolphins: blue-grey body, glow-in-the-dark, black eyes). Barely started — ~0g used.", warnings: [], taskIds: [1033627364] },
   ],
 
   spools: [
@@ -99,10 +113,10 @@ const INVENTORY_DATA = {
     // Order 1
     { id: "pla-purple-r", name: "Purple", material: "PLA", color: "#7B2D8E", sku: "10700", spoolType: "refill", weightG: 1000, remainingG: 1000, costPerSpool: 12.99, qty: 1, notes: "Order 1" },
     { id: "pla-turquoise-r", name: "Turquoise", material: "PLA", color: "#40C9B0", rfidColor: "00B1B7", sku: "10605", spoolType: "refill", weightG: 1000, remainingG: 97, costPerSpool: 12.99, qty: 1, notes: "Order 1. Open — nearly empty." },
-    { id: "pla-yellow-r", name: "Yellow", material: "PLA", color: "#FFD700", rfidColor: "F4EE2A", sku: "10400", spoolType: "refill", weightG: 1000, remainingG: 500, costPerSpool: 13.00, qty: 2, notes: "Order 1. 1× open + 1× sealed." },
+    { id: "pla-yellow-r", name: "Yellow", material: "PLA", color: "#FFD700", rfidColor: "F4EE2A", sku: "10400", spoolType: "refill", weightG: 1000, remainingG: 490.51, costPerSpool: 13.00, qty: 2, notes: "Order 1. 1× open + 1× sealed." },
     // Orders 3-5 refills
-    { id: "pla-jade-white-r", name: "Jade White", material: "PLA", color: "#E8E4D9", rfidColor: "FFFFFF", sku: "10100", spoolType: "refill", weightG: 1000, remainingG: 555, costPerSpool: 12.99, qty: 2, emptied: 1, notes: "1× open + 1× sealed (Orders 3+5). 1st refill emptied 2026-05." },
-    { id: "pla-black-r", name: "Black", material: "PLA", color: "#1a1a1a", rfidColor: "000000", sku: "10101", spoolType: "refill", weightG: 1000, remainingG: 777, costPerSpool: 12.99, qty: 1, emptied: 1, notes: "1× open (sealed one opened 2026-06-08 mid Zombicide — ran out). Order 5." },
+    { id: "pla-jade-white-r", name: "Jade White", material: "PLA", color: "#E8E4D9", rfidColor: "FFFFFF", sku: "10100", spoolType: "refill", weightG: 1000, remainingG: 361.31, costPerSpool: 12.99, qty: 2, emptied: 1, notes: "1× open + 1× sealed (Orders 3+5). 1st refill emptied 2026-05." },
+    { id: "pla-black-r", name: "Black", material: "PLA", color: "#1a1a1a", rfidColor: "000000", sku: "10101", spoolType: "refill", weightG: 1000, remainingG: 471.06, costPerSpool: 12.99, qty: 1, emptied: 1, notes: "1× open (sealed one opened 2026-06-08 mid Zombicide — ran out). Order 5." },
     { id: "pla-maroon-red-r", name: "Maroon Red", material: "PLA", color: "#800020", sku: "10205", spoolType: "refill", weightG: 1000, remainingG: 1000, costPerSpool: 12.99, qty: 1, notes: "Order 3" },
     { id: "pla-brown-r", name: "Brown", material: "PLA", color: "#6D4C30", rfidColor: "6F5034", sku: "10800", spoolType: "refill", weightG: 1000, remainingG: 855, costPerSpool: 12.99, qty: 1, notes: "Order 3. Open." },
     { id: "pla-beige-r", name: "Beige", material: "PLA", color: "#D4C5A9", sku: "10201", spoolType: "refill", weightG: 1000, remainingG: 1000, costPerSpool: 12.99, qty: 3, notes: "1× Order 3, 2× Order 5" },
@@ -112,7 +126,7 @@ const INVENTORY_DATA = {
     { id: "pla-pink-r", name: "Pink", material: "PLA", color: "#F48FB1", sku: "10203", spoolType: "refill", weightG: 1000, remainingG: 1000, costPerSpool: 13.99, qty: 1, notes: "Order 4" },
     { id: "pla-cobalt-blue-r", name: "Cobalt Blue", material: "PLA", color: "#0047AB", sku: "10604", spoolType: "refill", weightG: 1000, remainingG: 1000, costPerSpool: 13.99, qty: 2, notes: "Order 4" },
     { id: "pla-bright-green-r", name: "Bright Green", material: "PLA", color: "#39B54A", sku: "10503", spoolType: "refill", weightG: 1000, remainingG: 1000, costPerSpool: 12.99, qty: 1, notes: "Order 5" },
-    { id: "pla-pumpkin-orange-r", name: "Pumpkin Orange", material: "PLA", color: "#E8751A", rfidColor: "FF9016", sku: "10301", spoolType: "refill", weightG: 1000, remainingG: 548, costPerSpool: 12.99, qty: 2, notes: "1× open + 1× sealed (Order 5)." },
+    { id: "pla-pumpkin-orange-r", name: "Pumpkin Orange", material: "PLA", color: "#E8751A", rfidColor: "FF9016", sku: "10301", spoolType: "refill", weightG: 1000, remainingG: 520.48, costPerSpool: 12.99, qty: 2, notes: "1× open + 1× sealed (Order 5)." },
 
     // ══════════════════════════════════════════════
     // PLA BASIC — SPOOLS
@@ -124,7 +138,7 @@ const INVENTORY_DATA = {
     { id: "pla-red-s", name: "Red", material: "PLA", color: "#D32F2F", rfidColor: "C12E1F", sku: "10200", spoolType: "spool", weightG: 1000, remainingG: 721, costPerSpool: 14.95, qty: 2, notes: "Order 1. 1× open + 1× sealed." },
     { id: "pla-pumpkin-orange-s", name: "Pumpkin Orange", material: "PLA", color: "#E8751A", rfidColor: "FF9016", sku: "10301", spoolType: "spool", weightG: 1000, remainingG: 0, costPerSpool: 14.94, qty: 1, notes: "Order 2. Emptied 2026-05-16 (Cooler Mugger)." },
     { id: "pla-indigo-purple-s", name: "Indigo Purple", material: "PLA", color: "#4B0082", rfidColor: "482960", sku: "10701", spoolType: "spool", weightG: 1000, remainingG: 547, costPerSpool: 14.94, qty: 1, notes: "Order 3. Open." },
-    { id: "pla-gray-s", name: "Gray", material: "PLA", color: "#808080", sku: "10103", spoolType: "spool", weightG: 1000, remainingG: 1000, costPerSpool: 14.94, qty: 4, notes: "1× Order 3, 3× Order 5" },
+    { id: "pla-gray-s", name: "Gray", material: "PLA", color: "#808080", rfidColor: "8E9089", sku: "10103", spoolType: "spool", weightG: 1000, remainingG: 676.53, costPerSpool: 14.94, qty: 4, notes: "1× Order 3, 3× Order 5. 1× open (RFID 8E9089)." },
     { id: "pla-mistletoe-green-s", name: "Mistletoe Green", material: "PLA", color: "#2E6B4F", rfidColor: "3F8E43", sku: "10502", spoolType: "spool", weightG: 1000, remainingG: 947, costPerSpool: 14.94, qty: 1, notes: "Order 3. Open." },
     { id: "pla-cocoa-brown-s", name: "Cocoa Brown", material: "PLA", color: "#5C3317", sku: "10802", spoolType: "spool", weightG: 1000, remainingG: 1000, costPerSpool: 14.94, qty: 2, notes: "1× Order 3, 1× Order 5" },
     { id: "pla-sunflower-yellow-s", name: "Sunflower Yellow", material: "PLA", color: "#FFB300", sku: "10402", spoolType: "spool", weightG: 1000, remainingG: 1000, costPerSpool: 16.09, qty: 1, notes: "Order 4" },
@@ -137,12 +151,12 @@ const INVENTORY_DATA = {
     // ══════════════════════════════════════════════
     // PLA GLOW
     // ══════════════════════════════════════════════
-    { id: "pla-glow-green", name: "Glow Green", material: "PLA Glow", color: "#76FF7A", sku: "15500", spoolType: "spool", weightG: 1000, remainingG: 1000, costPerSpool: 24.99, qty: 1, notes: "Order 4. External spool only — NOT AMS compatible. For D&D kit." },
+    { id: "pla-glow-green", name: "Glow Green", material: "PLA Glow", color: "#76FF7A", rfidColor: "A1FFAC", sku: "15500", spoolType: "spool", weightG: 1000, remainingG: 918.34, costPerSpool: 24.99, qty: 1, notes: "Order 4. RFID A1FFAC. Glow-in-the-dark — fed externally for multicolor (e.g. Praying Mantis). For D&D kit." },
 
     // ══════════════════════════════════════════════
     // PLA SILK
     // ══════════════════════════════════════════════
-    { id: "pla-silk-dawn", name: "Dawn Radiance", material: "PLA Silk", color: "linear-gradient(135deg, #F4A460, #DAA520, #E8C07A, #CD853F)", sku: "13912", spoolType: "spool", weightG: 1000, remainingG: 571, costPerSpool: 24.99, qty: 1, notes: "Multi-color silk. Reconciled 2026-06-06." },
+    { id: "pla-silk-dawn", name: "Dawn Radiance", material: "PLA Silk", color: "linear-gradient(135deg, #F4A460, #DAA520, #E8C07A, #CD853F)", rfidColor: "EC984C", sku: "13912", spoolType: "spool", weightG: 1000, remainingG: 124.21, costPerSpool: 24.99, qty: 1, notes: "Multi-color rainbow silk (AMS reports RFID EC984C). Reconciled 2026-06-06." },
 
     // ══════════════════════════════════════════════
     // PETG
