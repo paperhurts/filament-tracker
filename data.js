@@ -32,7 +32,7 @@
 ═══════════════════════════════════════════════════════════════════
 */
 const INVENTORY_DATA = {
-  lastUpdated: "2026-06-19",
+  lastUpdated: "2026-07-15",
   printer: "Bambu Lab P2S + AMS",
 
   // Which spool IDs are loaded in AMS slots 1-4 (null = empty)
@@ -56,8 +56,8 @@ const INVENTORY_DATA = {
     { date: "2026-04-24", name: "Flexi Skeleton Spinosaurus (25cm)", url: "", material: "PLA", materialUsedId: "pla-black-s", filamentUsedG: 90, status: "success", notes: "0.2mm layer, 2 walls, 5% infill. Print-in-place skeleton dino.", warnings: [] },
     { date: "2026-04-25", name: "Mid-Century Organizer (3 plates)", url: "", material: "PLA", materialUsedId: "pla-jade-white-s", filamentUsedG: 445, status: "success", notes: "Plate 1: A2 White 387g (15.2h!), Plate 2: A2 White 56g, Plate 3: A3 Cyan 2g (pegs). First practical/household print.", warnings: [] },
     { date: "2026-04-26", name: "Altoids Chess Set (x3)", url: "", material: "PLA", materialUsedId: "pla-jade-white-s", filamentUsedG: 36, status: "success", notes: "Multicolor: A2 White 8g + A1 Black 4g per set. Printed 3 copies — was a hit.", warnings: [] },
-    { date: "2026-04-27", name: "Imperial Tower (3 plates)", url: "", material: "PLA", materialUsedId: "pla-black-s", filamentUsedG: 334, status: "success", notes: "Plate 1: A1 Black 104g, Plate 2: A1 Black 134g, Plate 3: A1 Black 96g. D&D terrain for Rob's campaign.", warnings: [] },
-    { date: "2026-04-28", name: "Modular D&D Medieval Tavern & Inn Set (2 plates)", url: "", material: "PLA", materialUsedId: "pla-black-s", filamentUsedG: 338, status: "success", notes: "Plate 2: A1 Black 92g, Plate 1: A1 Black 246g. More D&D terrain — printing today.", warnings: [] },
+    { date: "2026-04-27", name: "Imperial Tower (3 plates)", url: "", material: "PLA", materialUsedId: "pla-black-s", filamentUsedG: 334, status: "success", notes: "Plate 1: A1 Black 104g, Plate 2: A1 Black 134g, Plate 3: A1 Black 96g. D&D terrain for Rob's campaign.", warnings: [], taskIds: [909677217, 910084106] },
+    { date: "2026-04-28", name: "Modular D&D Medieval Tavern & Inn Set (2 plates)", url: "", material: "PLA", materialUsedId: "pla-black-s", filamentUsedG: 338, status: "success", notes: "Plate 2: A1 Black 92g, Plate 1: A1 Black 246g. More D&D terrain — printing today.", warnings: [], taskIds: [910823881, 911563175] },
     { date: "2026-04-18", name: "Dummy 13 - General Grevious", url: "https://makerworld.com/en/models/1201894", material: "PLA", materialUsedId: "pla-jade-white-s", filamentUsedG: 47.18, status: "success", notes: "", warnings: [], taskIds: [888150381] },
     { date: "2026-04-19", name: "Halloween Cat Mini Figures – Set of 6", url: "https://makerworld.com/en/models/1826373", material: "PLA", materialUsedId: "pla-jade-white-s", filamentUsedG: 49.64, status: "success", notes: "", warnings: [], taskIds: [889021887] },
     { date: "2026-04-29", name: "Infinite Cube", url: "https://makerworld.com/en/models/909738", material: "PLA", materialUsedId: "pla-black-s", filamentUsedG: 23.36, status: "success", notes: "", warnings: [], taskIds: [914227875] },
@@ -104,6 +104,11 @@ const INVENTORY_DATA = {
     { date: "2026-06-18", name: "Zombicide 'undead or alive' Balcony", url: "https://makerworld.com/en/models/423587", material: "PLA", materialUsedId: "pla-gray-s", filamentUsedG: 89.9, status: "success", notes: "Printed 2026-06-17 → 2026-06-18. 4 plates, all Gray.", warnings: [], taskIds: [1028347771, 1028898603, 1029295881, 1031218647] },
     { date: "2026-06-18", name: "Articulated Praying Mantis!", url: "https://makerworld.com/en/models/976972", material: "PLA Glow", materialUsedId: "pla-glow-green", filamentUsedG: 120.76, status: "success", notes: "Colors: Glow-in-the-dark green 81.7g, Pumpkin Orange 27.5g, Black 11.6g.", warnings: [], taskIds: [1031522401] },
     { date: "2026-06-19", name: "Articulated Dolphin — failed", url: "https://makerworld.com/en/models/131099", material: "PLA", materialUsedId: "pla-blue-grey-r", filamentUsedG: 0, status: "failed", notes: "Failed ~9 seconds in (two dolphins: blue-grey body, glow-in-the-dark, black eyes). Barely started — ~0g used.", warnings: [], taskIds: [1033627364] },
+    { date: "2026-06-20", name: "CROCODILE Realistic – Articulated Animal — cancelled", url: "https://makerworld.com/en/models/2341883", material: "PLA Glow", materialUsedId: "pla-glow-green", filamentUsedG: 60.6, status: "failed", notes: "Nozzle clog — cancelled about half done. Est. colors (half of plate): Glow green 38.2g, White 19.4g, Black 3.0g.", warnings: [], taskIds: [1035074584] },
+    { date: "2026-06-29", name: "CROCODILE Realistic – Articulated Animal", url: "https://makerworld.com/en/models/2341883", material: "PLA Glow", materialUsedId: "pla-glow-green", filamentUsedG: 121.21, status: "success", notes: "Printed 2026-06-28 → 2026-06-29. Reprint after clog. Croc + dolphin printed together for Rowan in glow-in-the-dark. Colors: Glow green 76.4g, White 38.8g, Black 6.0g.", warnings: [], taskIds: [1054020929] },
+    { date: "2026-06-30", name: "Realistic Articulated Mosasaur Flexi", url: "https://makerworld.com/en/models/2805284", material: "PLA", materialUsedId: "pla-gray-s", filamentUsedG: 58.03, status: "success", notes: "All Gray.", warnings: [], taskIds: [1057541134] },
+    { date: "2026-07-07", name: "Zombicide modular walls (Muro Entrelazado/Brazos, 4 prints)", url: "", material: "PLA", materialUsedId: "pla-gray-s", filamentUsedG: 749.63, status: "success", notes: "Printed 2026-07-04 → 2026-07-07. 4 prints, all Gray. Combined local project — no MakerWorld link. Gray spool ran out mid-run — new spool loaded.", warnings: [], taskIds: [1066003659, 1067393741, 1069390800, 1071698518] },
+    { date: "2026-07-15", name: "Industrial Imperium Set A, Modular Terrain", url: "https://makerworld.com/en/models/1963843", material: "PLA", materialUsedId: "pla-black-r", filamentUsedG: 225.69, status: "success", notes: "Printed 2026-07-14 → 2026-07-15. All Black.", warnings: [], taskIds: [1091455526] },
   ],
 
   spools: [
@@ -115,8 +120,8 @@ const INVENTORY_DATA = {
     { id: "pla-turquoise-r", name: "Turquoise", material: "PLA", color: "#40C9B0", rfidColor: "00B1B7", sku: "10605", spoolType: "refill", weightG: 1000, remainingG: 97, costPerSpool: 12.99, qty: 1, notes: "Order 1. Open — nearly empty." },
     { id: "pla-yellow-r", name: "Yellow", material: "PLA", color: "#FFD700", rfidColor: "F4EE2A", sku: "10400", spoolType: "refill", weightG: 1000, remainingG: 490.51, costPerSpool: 13.00, qty: 2, notes: "Order 1. 1× open + 1× sealed." },
     // Orders 3-5 refills
-    { id: "pla-jade-white-r", name: "Jade White", material: "PLA", color: "#E8E4D9", rfidColor: "FFFFFF", sku: "10100", spoolType: "refill", weightG: 1000, remainingG: 361.31, costPerSpool: 12.99, qty: 2, emptied: 1, notes: "1× open + 1× sealed (Orders 3+5). 1st refill emptied 2026-05." },
-    { id: "pla-black-r", name: "Black", material: "PLA", color: "#1a1a1a", rfidColor: "000000", sku: "10101", spoolType: "refill", weightG: 1000, remainingG: 471.06, costPerSpool: 12.99, qty: 1, emptied: 1, notes: "1× open (sealed one opened 2026-06-08 mid Zombicide — ran out). Order 5." },
+    { id: "pla-jade-white-r", name: "Jade White", material: "PLA", color: "#E8E4D9", rfidColor: "FFFFFF", sku: "10100", spoolType: "refill", weightG: 1000, remainingG: 303.15, costPerSpool: 12.99, qty: 2, emptied: 1, notes: "1× open + 1× sealed (Orders 3+5). 1st refill emptied 2026-05." },
+    { id: "pla-black-r", name: "Black", material: "PLA", color: "#1a1a1a", rfidColor: "000000", sku: "10101", spoolType: "refill", weightG: 1000, remainingG: 236.34, costPerSpool: 12.99, qty: 1, emptied: 1, notes: "1× open (sealed one opened 2026-06-08 mid Zombicide — ran out). Order 5." },
     { id: "pla-maroon-red-r", name: "Maroon Red", material: "PLA", color: "#800020", sku: "10205", spoolType: "refill", weightG: 1000, remainingG: 1000, costPerSpool: 12.99, qty: 1, notes: "Order 3" },
     { id: "pla-brown-r", name: "Brown", material: "PLA", color: "#6D4C30", rfidColor: "6F5034", sku: "10800", spoolType: "refill", weightG: 1000, remainingG: 855, costPerSpool: 12.99, qty: 1, notes: "Order 3. Open." },
     { id: "pla-beige-r", name: "Beige", material: "PLA", color: "#D4C5A9", sku: "10201", spoolType: "refill", weightG: 1000, remainingG: 1000, costPerSpool: 12.99, qty: 3, notes: "1× Order 3, 2× Order 5" },
@@ -138,7 +143,7 @@ const INVENTORY_DATA = {
     { id: "pla-red-s", name: "Red", material: "PLA", color: "#D32F2F", rfidColor: "C12E1F", sku: "10200", spoolType: "spool", weightG: 1000, remainingG: 721, costPerSpool: 14.95, qty: 2, notes: "Order 1. 1× open + 1× sealed." },
     { id: "pla-pumpkin-orange-s", name: "Pumpkin Orange", material: "PLA", color: "#E8751A", rfidColor: "FF9016", sku: "10301", spoolType: "spool", weightG: 1000, remainingG: 0, costPerSpool: 14.94, qty: 1, notes: "Order 2. Emptied 2026-05-16 (Cooler Mugger)." },
     { id: "pla-indigo-purple-s", name: "Indigo Purple", material: "PLA", color: "#4B0082", rfidColor: "482960", sku: "10701", spoolType: "spool", weightG: 1000, remainingG: 547, costPerSpool: 14.94, qty: 1, notes: "Order 3. Open." },
-    { id: "pla-gray-s", name: "Gray", material: "PLA", color: "#808080", rfidColor: "8E9089", sku: "10103", spoolType: "spool", weightG: 1000, remainingG: 676.53, costPerSpool: 14.94, qty: 4, notes: "1× Order 3, 3× Order 5. 1× open (RFID 8E9089)." },
+    { id: "pla-gray-s", name: "Gray", material: "PLA", color: "#808080", rfidColor: "8E9089", sku: "10103", spoolType: "spool", weightG: 1000, remainingG: 868.87, costPerSpool: 14.94, qty: 3, emptied: 1, notes: "1× open + 2× sealed (Order 5). 1st spool (Order 3) emptied 2026-07 mid Zombicide walls. RFID 8E9089." },
     { id: "pla-mistletoe-green-s", name: "Mistletoe Green", material: "PLA", color: "#2E6B4F", rfidColor: "3F8E43", sku: "10502", spoolType: "spool", weightG: 1000, remainingG: 947, costPerSpool: 14.94, qty: 1, notes: "Order 3. Open." },
     { id: "pla-cocoa-brown-s", name: "Cocoa Brown", material: "PLA", color: "#5C3317", sku: "10802", spoolType: "spool", weightG: 1000, remainingG: 1000, costPerSpool: 14.94, qty: 2, notes: "1× Order 3, 1× Order 5" },
     { id: "pla-sunflower-yellow-s", name: "Sunflower Yellow", material: "PLA", color: "#FFB300", sku: "10402", spoolType: "spool", weightG: 1000, remainingG: 1000, costPerSpool: 16.09, qty: 1, notes: "Order 4" },
@@ -151,7 +156,7 @@ const INVENTORY_DATA = {
     // ══════════════════════════════════════════════
     // PLA GLOW
     // ══════════════════════════════════════════════
-    { id: "pla-glow-green", name: "Glow Green", material: "PLA Glow", color: "#76FF7A", rfidColor: "A1FFAC", sku: "15500", spoolType: "spool", weightG: 1000, remainingG: 918.34, costPerSpool: 24.99, qty: 1, notes: "Order 4. RFID A1FFAC. Glow-in-the-dark — fed externally for multicolor (e.g. Praying Mantis). For D&D kit." },
+    { id: "pla-glow-green", name: "Glow Green", material: "PLA Glow", color: "#76FF7A", rfidColor: "A1FFAC", sku: "15500", spoolType: "spool", weightG: 1000, remainingG: 803.71, costPerSpool: 24.99, qty: 1, notes: "Order 4. RFID A1FFAC. Glow-in-the-dark — fed externally for multicolor (e.g. Praying Mantis). For D&D kit." },
 
     // ══════════════════════════════════════════════
     // PLA SILK
