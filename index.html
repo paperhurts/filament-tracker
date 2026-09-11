@@ -268,11 +268,20 @@
   }
 
   .weight-bar {
+    display: flex;
+    gap: 2px;
     width: 100%;
     height: 4px;
     background: var(--border);
     border-radius: 2px;
     margin-top: 0.5rem;
+    overflow: hidden;
+  }
+  .weight-bar-seg {
+    flex: 1;
+    height: 100%;
+    background: var(--border);
+    border-radius: 2px;
     overflow: hidden;
   }
   .weight-bar-fill {
@@ -390,16 +399,24 @@
 // Dashboard logic below — you shouldn't need to edit this
 // ════════════════════════════════════════════════════════════════
 
+// ── Stock helpers ──
+// data.js convention: `remainingG` is the grams left on the ONE currently-open
+// unit; the other qty-1 units are sealed and still full at `weightG`.
+// So stock is NOT remainingG * qty — that undercounts every multi-unit entry.
+const stockG = s => s.qty > 0 ? s.remainingG + (s.qty - 1) * s.weightG : 0;
+const capacityG = s => s.weightG * s.qty;          // grams if every unit were full
+const fmtG = g => String(Math.round(g * 100) / 100); // trim float noise: 490.51 + 1000 → "1490.51"
+
 function computeStats(data) {
   const spools = data.spools.filter(s => s.material !== "Mystery");
   const totalSpools = spools.reduce((sum, s) => sum + s.qty, 0);
-  const totalWeightKg = spools.reduce((sum, s) => sum + (s.remainingG * s.qty), 0) / 1000;
+  const totalWeightKg = spools.reduce((sum, s) => sum + stockG(s), 0) / 1000;
   const totalCost = data.spools.reduce((sum, s) => sum + (s.costPerSpool * (s.qty + (s.emptied || 0))), 0); // emptied units still count toward Invested
   const materials = {};
   spools.forEach(s => {
     if (!materials[s.material]) materials[s.material] = { count: 0, weightG: 0 };
     materials[s.material].count += s.qty;
-    materials[s.material].weightG += s.remainingG * s.qty;
+    materials[s.material].weightG += stockG(s);
   });
   const colors = spools.reduce((sum, s) => sum + 1, 0); // unique colors
   return { totalSpools, totalWeightKg, totalCost, materials, colors };
@@ -465,8 +482,11 @@ function renderDashboard() {
             const swatchStyle = s.color.includes('gradient')
               ? `background: ${s.color};`
               : `background-color: ${s.color};`;
-            const pct = s.weightG > 0 ? (s.remainingG / s.weightG * 100) : 0;
-            const barColor = getBarColor(s.remainingG, s.weightG);
+            // One segment per unit on hand: the open unit at its real level, sealed units full.
+            const openPct = s.weightG > 0 ? (s.remainingG / s.weightG * 100) : 0;
+            const segs = Array.from({ length: Math.max(s.qty, 0) }, (_, i) => i === 0 ? openPct : 100)
+              .map(p => `<div class="weight-bar-seg"><div class="weight-bar-fill" style="width:${p}%; background:${getBarColor(p, 100)}"></div></div>`)
+              .join('');
             return `<div class="spool-card">
               <div class="spool-swatch" style="${swatchStyle}"></div>
               <div class="spool-info">
@@ -474,9 +494,9 @@ function renderDashboard() {
                 <div class="spool-meta">
                   <span>${s.spoolType}</span>
                   <span>$${s.costPerSpool.toFixed(2)}</span>
-                  ${s.weightG > 0 ? `<span>${s.remainingG}g / ${s.weightG}g</span>` : ''}
+                  ${s.weightG > 0 ? `<span>${fmtG(stockG(s))}g / ${fmtG(capacityG(s))}g</span>` : ''}
                 </div>
-                ${s.weightG > 0 ? `<div class="weight-bar"><div class="weight-bar-fill" style="width:${pct}%; background:${barColor}"></div></div>` : ''}
+                ${s.weightG > 0 ? `<div class="weight-bar">${segs}</div>` : ''}
                 ${s.qty > 1 ? `<div class="spool-qty">× ${s.qty} spools</div>` : ''}
                 ${s.notes ? `<div class="spool-qty">${s.notes}</div>` : ''}
               </div>
@@ -715,11 +735,11 @@ function renderDashboard() {
   stockMaterialOrder.forEach(material => {
     const matSpools = data.spools
       .filter(s => s.material === material && s.weightG > 0)
-      .sort((a, b) => (b.remainingG * b.qty) - (a.remainingG * a.qty));
+      .sort((a, b) => stockG(b) - stockG(a));
     if (matSpools.length === 0) return;
 
-    const totalRemaining = matSpools.reduce((sum, s) => sum + (s.remainingG * s.qty), 0);
-    const totalCapacity = matSpools.reduce((sum, s) => sum + (s.weightG * s.qty), 0);
+    const totalRemaining = matSpools.reduce((sum, s) => sum + stockG(s), 0);
+    const totalCapacity = matSpools.reduce((sum, s) => sum + capacityG(s), 0);
     const matColor = matGroupColors[material] || '#8b949e';
 
     const card = document.createElement('div');
@@ -746,14 +766,14 @@ function renderDashboard() {
         datasets: [
           {
             label: 'Remaining',
-            data: matSpools.map(s => (s.remainingG * s.qty) / 1000),
+            data: matSpools.map(s => stockG(s) / 1000),
             backgroundColor: matSpools.map(s => s.color.includes('gradient') ? matColor : s.color),
             borderRadius: 4,
             barThickness: 20,
           },
           {
             label: 'Used',
-            data: matSpools.map(s => ((s.weightG - s.remainingG) * s.qty) / 1000),
+            data: matSpools.map(s => (capacityG(s) - stockG(s)) / 1000),
             backgroundColor: 'rgba(255,255,255,0.06)',
             borderRadius: 4,
             barThickness: 20,
