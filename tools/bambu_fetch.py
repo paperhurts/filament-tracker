@@ -45,11 +45,18 @@ def _request(method, path, payload=None, token=None):
     data = json.dumps(payload).encode() if payload is not None else None
     req = urllib.request.Request(url, data=data, headers=headers, method=method)
     with urllib.request.urlopen(req, timeout=30) as resp:
+        status = resp.status
         body = resp.read().decode()
+    if not body.strip():
+        # Some endpoints (notably sendemail/code) answer 2xx with an empty
+        # body to mean "done". Callers look up the keys they need, so an
+        # empty dict reports that truthfully instead of inventing content.
+        return {}
     try:
         return json.loads(body)
     except json.JSONDecodeError:
-        print(f"Non-JSON response from {path}:\n{body[:2000]}", file=sys.stderr)
+        print(f"Non-JSON response from {path} (HTTP {status}):\n{body[:2000]}",
+              file=sys.stderr)
         sys.exit(1)
 
 

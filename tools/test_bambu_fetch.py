@@ -1,7 +1,10 @@
+import contextlib
+import io
 import json
 import sys
 import unittest
 from pathlib import Path
+from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).parent))
 import bambu_fetch  # noqa: E402
@@ -42,6 +45,41 @@ class NormalizeTasksTest(unittest.TestCase):
 
     def test_missing_hits_key_returns_empty(self):
         self.assertEqual(bambu_fetch.normalize_tasks({}), [])
+
+
+class RequestTest(unittest.TestCase):
+    @staticmethod
+    def _fake_response(body, status=200):
+        resp = mock.MagicMock()
+        resp.read.return_value = body
+        resp.status = status
+        resp.__enter__.return_value = resp
+        return resp
+
+    def _patched(self, body, status=200):
+        return mock.patch.object(bambu_fetch.urllib.request, "urlopen",
+                                 return_value=self._fake_response(body, status))
+
+    def test_empty_body_is_not_an_error(self):
+        # sendemail/code returns 200 with no content when the code was sent.
+        with self._patched(b""):
+            self.assertEqual(bambu_fetch._request("POST", "/sendemail/code"), {})
+
+    def test_whitespace_body_is_not_an_error(self):
+        with self._patched(b"\n  \n"):
+            self.assertEqual(bambu_fetch._request("POST", "/sendemail/code"), {})
+
+    def test_json_body_is_parsed(self):
+        with self._patched(b'{"accessToken": "tok"}'):
+            resp = bambu_fetch._request("POST", "/login", {"account": "a"})
+        self.assertEqual(resp["accessToken"], "tok")
+
+    def test_non_json_body_still_exits_rather_than_guessing(self):
+        with self._patched(b"<html>maintenance</html>"), \
+                contextlib.redirect_stderr(io.StringIO()) as err:
+            with self.assertRaises(SystemExit):
+                bambu_fetch._request("GET", "/my/tasks")
+        self.assertIn("HTTP 200", err.getvalue())
 
 
 if __name__ == "__main__":
