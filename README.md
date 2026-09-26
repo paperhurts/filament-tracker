@@ -40,16 +40,18 @@ and pushes to GitHub after you approve a summary.
 ### Without Claude (standalone fetcher)
 
 ```bash
-# one-time login (~every 3 months). Leave password blank if you use Google/Apple SSO —
-# it falls back to an email verification code.
+# one-time login (re-run when `tasks` says the token expired). Leave password blank if
+# you use Google/Apple SSO — it falls back to an email verification code. Accounts with
+# authenticator-app 2FA also use the email code.
 python tools/bambu_fetch.py login
 
-# dump normalized print history as JSON
-python tools/bambu_fetch.py tasks --limit 100
+# dump normalized print history as JSON (pages through up to 300 tasks; --limit N to change)
+python tools/bambu_fetch.py tasks
 ```
 
-Each task includes: Bambu task id, design title, date, grams used, status, and
-per-filament detail (material type + the color hex the AMS **actually fed**).
+Each task includes: Bambu task id, design title, date, grams, status, and
+per-filament detail (material type, the color hex the AMS **actually fed**, and which
+AMS unit/slot fed it).
 Pipe it wherever you like and edit `data.js` by hand.
 
 ## Data model notes (learned the hard way)
@@ -63,8 +65,11 @@ Pipe it wherever you like and edit `data.js` by hand.
   double-logs.
 - **`emptied`** counts fully-consumed spools so the "Invested" stat reflects lifetime
   spend, not just inventory on hand.
-- Task status from the API: `2` = finished, `3` = cancelled. "Finished" ≠ "good" —
-  that's what the feedback step is for.
+- Task status from the API (per Bambu Studio's own source): `2` = finished,
+  `3` = failed **or** cancelled (the API can't tell which), `1`/`4` = still printing.
+  "Finished" ≠ "good" — that's what the feedback step is for.
+- **Grams are slicer estimates** for the whole job. A job cancelled 10 minutes in still
+  reports its full planned weight, so cancelled prints need a human guess.
 
 ## Security
 
@@ -77,11 +82,18 @@ Pipe it wherever you like and edit `data.js` by hand.
 ## Caveats
 
 - The Bambu cloud API is **unofficial** (community-documented). It can change without
-  notice; if login breaks, see
-  [coelacant1/Bambu-Lab-Cloud-API](https://github.com/coelacant1/Bambu-Lab-Cloud-API)
-  for the current state of the art. The fetcher fails loudly rather than guessing.
-- Bambu's task history appears limited to **~90 days** — sync at least monthly or
-  prints fall off the end.
+  notice; if login breaks, the most actively maintained reference is
+  [ha-bambulab](https://github.com/greghesp/ha-bambulab)'s
+  `custom_components/bambu_lab/pybambu/bambu_cloud.py`. The fetcher fails loudly rather
+  than guessing.
+- Bambu's task history is limited to **~90 days** — sync at least monthly or prints fall
+  off the end.
+- Prints started from the **printer's touchscreen / SD card**, or in LAN-only mode, never
+  reach Bambu Cloud — log those by hand.
+- Since 2026 Bambu may answer with a **CAPTCHA (HTTP 418)** when it dislikes a network.
+  The fetcher stops instead of retrying, because retries extend the block; wait a few
+  hours. The fetcher identifies itself honestly (`bambu-filament-tracker/1.0`) rather than
+  impersonating Bambu Studio, which Bambu has asked third-party tools not to do.
 
 ## Using this for your own filament
 
