@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+
+      - name: Fetcher unit tests
+        run: python -m unittest discover -s tools -v
+
+      - name: data.js parses
+        run: node --check data.js
+
+      - name: data.js is consistent
+        run: node tools/validate_data.js
+
+      - name: Install Chromium
+        run: |
+          npm install --no-save --no-package-lock playwright@1.56.1
+          npx playwright install --with-deps chromium
+
+      - name: Dashboard renders
+        run: node tools/smoke_dashboard.js

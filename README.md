@@ -14,6 +14,7 @@ fetcher works for any Bambu Lab cloud account.
 |---|---|
 | `index.html` | The dashboard — open it in a browser, no build step, no server. Charts (Chart.js via CDN), spool inventory, AMS loadout, print log. |
 | `data.js` | **The single source of truth.** All spools, AMS slots, and print history live in one `INVENTORY_DATA` object. Edit this (or let the agent do it); never edit data into `index.html`. |
+| `tools/validate_data.js`, `tools/smoke_dashboard.js` | Data and dashboard checks — run by CI on every push (see [Checks](#checks)). |
 | `tools/bambu_fetch.py` | Dependency-free Python 3 CLI that logs into the Bambu Lab cloud and dumps your print task history as clean JSON. Works standalone — no AI required. |
 | `.claude/skills/filament-update/` | A [Claude Code](https://claude.com/claude-code) skill: the playbook an AI agent follows to sync prints, take your feedback, record filament orders, decrement spool weights, validate, and push. |
 
@@ -61,6 +62,9 @@ Pipe it wherever you like and edit `data.js` by hand.
   on the wrong one surfaces filament you don't own.
 - **`rfidColor`** on each spool stores the exact hex Bambu's RFID reports, so future
   syncs match spools exactly (display `color` can stay human-pretty).
+- **`filaments`** on multi-color print-log entries splits the grams per spool
+  (`[{ spoolId, g }]`), so usage charts credit every color a print actually used — not
+  just the main one. About half of all grams logged so far came from multi-color prints.
 - **`taskIds`** on print-log entries are the dedup key — re-running a sync never
   double-logs.
 - **`emptied`** counts fully-consumed spools so the "Invested" stat reflects lifetime
@@ -70,6 +74,19 @@ Pipe it wherever you like and edit `data.js` by hand.
   "Finished" ≠ "good" — that's what the feedback step is for.
 - **Grams are slicer estimates** for the whole job. A job cancelled 10 minutes in still
   reports its full planned weight, so cancelled prints need a human guess.
+
+## Checks
+
+CI (`.github/workflows/ci.yml`) runs on every push to `main` and every PR:
+
+| Check | What it catches |
+|---|---|
+| `python -m unittest discover -s tools` | Fetcher regressions: login paths, pagination, status mapping, API error handling |
+| `node tools/validate_data.js` | Bad data: unknown spool ids, negative/overfull spools, duplicate task ids, color splits that don't add up, spools missing fields the dashboard needs |
+| `node tools/smoke_dashboard.js` | A `data.js` that validates but still breaks the page — renders `index.html` in headless Chromium and checks every print, spool and chart drew |
+
+Run the first two locally with no setup. The smoke test needs Playwright
+(`npm install --no-save playwright && npx playwright install chromium`).
 
 ## Security
 
