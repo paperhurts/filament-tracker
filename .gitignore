@@ -5,3 +5,6 @@ docs/
 .remember/
 .tmp_orig_comment.txt
 tools/__pycache__/
+
+# CI installs Playwright here for the dashboard smoke test
+node_modules/
