@@ -368,6 +368,35 @@
     color: var(--text-secondary);
     margin-top: 0.2rem;
   }
+  .print-colors { display: flex; flex-direction: column; gap: 0.15rem; margin-top: 0.3rem; }
+  .print-color {
+    display: flex; align-items: center; gap: 0.35rem;
+    font-size: 0.72rem; color: var(--text-secondary); white-space: nowrap;
+  }
+  .print-color .g { color: var(--text-muted); font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; }
+  .color-dot {
+    width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+
+  /* ── Running low ── */
+  .low-stock {
+    background: var(--bg-card);
+    border: 1px solid var(--yellow-mid);
+    border-radius: 8px;
+    padding: 0.9rem 1.2rem;
+    margin-bottom: 2rem;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1.2rem;
+  }
+  .low-stock[hidden] { display: none; }
+  .low-stock h3 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem; font-weight: 600; letter-spacing: 0.05em;
+    color: var(--yellow-mid); text-transform: uppercase;
+  }
+  .low-stock-item { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; }
+  .low-stock-item .g { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-secondary); }
+  .spool-card.out { opacity: 0.45; }
 
   /* ── Footer ── */
   footer {
@@ -413,6 +442,11 @@ const esc = v => String(v ?? '').replace(/[&<>"']/g, c =>
   ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 const safeUrl = u => /^https?:\/\//i.test(u || '') ? esc(u) : '';
 
+// Grams per spool for one print: the multi-color split when recorded,
+// otherwise everything on the main spool.
+const printParts = entry => entry.filaments ||
+  (entry.filamentUsedG ? [{ spoolId: entry.materialUsedId, g: entry.filamentUsedG }] : []);
+
 function computeStats(data) {
   const spools = data.spools.filter(s => s.material !== "Mystery");
   const totalSpools = spools.reduce((sum, s) => sum + s.qty, 0);
@@ -447,6 +481,25 @@ function renderDashboard() {
   document.getElementById('unique-colors').textContent = stats.colors;
   document.getElementById('last-updated').textContent = data.lastUpdated;
   if (data.printer) document.getElementById('printer-name').textContent = data.printer;
+
+  // Running low: colors whose stock across every refill + spool is under LOW_STOCK_G.
+  const LOW_STOCK_G = 250;
+  const stockByColor = {};
+  data.spools.filter(s => s.material !== 'Mystery' && s.weightG > 0).forEach(s => {
+    const k = s.material + '|' + s.name;
+    if (!stockByColor[k]) stockByColor[k] = { name: s.name, material: s.material, color: s.color, g: 0 };
+    stockByColor[k].g += stockG(s);
+  });
+  const low = Object.values(stockByColor).filter(c => c.g < LOW_STOCK_G).sort((a, b) => a.g - b.g);
+  const lowEl = document.getElementById('low-stock');
+  if (low.length) {
+    lowEl.hidden = false;
+    lowEl.innerHTML = `<h3>Running low</h3>` + low.map(c => {
+      const dot = c.color.includes('gradient') ? `background: ${c.color};` : `background-color: ${c.color};`;
+      return `<span class="low-stock-item"><span class="color-dot" style="${dot}"></span>${esc(c.name)}
+        <span class="g">${esc(c.material)} · ${c.g > 0 ? fmtG(c.g) + 'g' : 'out'}</span></span>`;
+    }).join('');
+  }
 
   // AMS slots
   const amsContainer = document.getElementById('ams-slots');
@@ -495,16 +548,16 @@ function renderDashboard() {
             const segs = Array.from({ length: Math.max(s.qty, 0) }, (_, i) => i === 0 ? openPct : 100)
               .map(p => `<div class="weight-bar-seg"><div class="weight-bar-fill" style="width:${p}%; background:${getBarColor(p, 100)}"></div></div>`)
               .join('');
-            return `<div class="spool-card">
+            return `<div class="spool-card${s.qty === 0 ? ' out' : ''}">
               <div class="spool-swatch" style="${swatchStyle}"></div>
               <div class="spool-info">
                 <div class="spool-name">${esc(s.name)}</div>
                 <div class="spool-meta">
                   <span>${esc(s.spoolType)}</span>
                   <span>$${s.costPerSpool.toFixed(2)}</span>
-                  ${s.weightG > 0 ? `<span>${fmtG(stockG(s))}g / ${fmtG(capacityG(s))}g</span>` : ''}
+                  ${s.qty === 0 ? '<span>none left</span>' : s.weightG > 0 ? `<span>${fmtG(stockG(s))}g / ${fmtG(capacityG(s))}g</span>` : ''}
                 </div>
-                ${s.weightG > 0 ? `<div class="weight-bar">${segs}</div>` : ''}
+                ${s.weightG > 0 && s.qty > 0 ? `<div class="weight-bar">${segs}</div>` : ''}
                 ${s.qty > 1 ? `<div class="spool-qty">× ${s.qty} spools</div>` : ''}
                 ${s.notes ? `<div class="spool-qty">${esc(s.notes)}</div>` : ''}
               </div>
@@ -622,31 +675,31 @@ function renderDashboard() {
   // === USAGE DONUT — each color used = slice, grouped by material outline ===
   const usageByColor = {};
   const usageGroupTotals = {};
-  data.printLog.forEach(entry => {
-    if (!entry.filamentUsedG) return;
-    const spool = data.spools.find(s => s.id === entry.materialUsedId);
+  data.printLog.forEach(entry => printParts(entry).forEach(part => {
+    const spool = data.spools.find(s => s.id === part.spoolId);
+    const material = spool ? spool.material : entry.material;
     // Key by color, not spool id, so a color bought as both refill and spool is one slice.
-    const key = spool ? entry.material + '|' + spool.name : entry.material;
+    const key = spool ? material + '|' + spool.name : material;
     if (!usageByColor[key]) {
       // For very dark colors, lighten them so they're visible
       let displayColor;
       if (spool) {
-        const rawColor = spool.color.includes('gradient') ? matGroupColors[entry.material] : spool.color;
+        const rawColor = spool.color.includes('gradient') ? matGroupColors[material] : spool.color;
         displayColor = (rawColor === '#1a1a1a') ? '#4a4a4a' : rawColor;
       } else {
-        displayColor = matGroupColors[entry.material];
+        displayColor = matGroupColors[material];
       }
       usageByColor[key] = {
-        label: spool ? spool.name : entry.material,
-        material: entry.material,
+        label: spool ? spool.name : material,
+        material,
         color: displayColor,
         totalG: 0,
       };
     }
-    usageByColor[key].totalG += entry.filamentUsedG;
-    if (!usageGroupTotals[entry.material]) usageGroupTotals[entry.material] = 0;
-    usageGroupTotals[entry.material] += entry.filamentUsedG;
-  });
+    usageByColor[key].totalG += part.g;
+    if (!usageGroupTotals[material]) usageGroupTotals[material] = 0;
+    usageGroupTotals[material] += part.g;
+  }));
 
   const usageSlices = [];
   const usageGroups = [];
@@ -745,7 +798,7 @@ function renderDashboard() {
 
   stockMaterialOrder.forEach(material => {
     const matSpools = data.spools
-      .filter(s => s.material === material && s.weightG > 0)
+      .filter(s => s.material === material && s.weightG > 0 && s.qty > 0)
       .sort((a, b) => stockG(b) - stockG(a));
     if (matSpools.length === 0) return;
 
@@ -823,13 +876,23 @@ function renderDashboard() {
       .map(entry => {
         const statusClass = esc(entry.status);
         const statusLabel = entry.status === 'success' ? 'OK' : entry.status === 'failed' ? 'FAIL' : 'REDO';
+        // Which colors it used (with grams when there's more than one).
+        const parts = entry.filaments || [{ spoolId: entry.materialUsedId, g: entry.filamentUsedG }];
+        const colorRows = parts.map(part => {
+          const sp = data.spools.find(s => s.id === part.spoolId);
+          if (!sp) return '';
+          const dot = sp.color.includes('gradient') ? `background: ${sp.color};` : `background-color: ${sp.color};`;
+          const label = esc(sp.name) + (sp.material !== entry.material ? ' ' + esc(sp.material) : '');
+          const g = parts.length > 1 ? ` <span class="g">${fmtG(part.g)}g</span>` : '';
+          return `<div class="print-color"><span class="color-dot" style="${dot}"></span>${label}${g}</div>`;
+        }).join('');
         return `<tr>
           <td style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--text-secondary);white-space:nowrap">${esc(entry.date)}</td>
           <td>
             <div style="font-weight:600">${esc(entry.name)}</div>
             ${safeUrl(entry.url) ? `<a href="${safeUrl(entry.url)}" target="_blank" rel="noopener" class="print-link">MakerWorld ↗</a>` : ''}
           </td>
-          <td><span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem">${esc(entry.material)}</span></td>
+          <td><span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem">${esc(entry.material)}</span><div class="print-colors">${colorRows}</div></td>
           <td><span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;white-space:nowrap">${entry.filamentUsedG ? entry.filamentUsedG + 'g' : '—'}</span></td>
           <td><span class="print-status ${statusClass}">${statusLabel}</span></td>
           <td>
@@ -870,6 +933,8 @@ document.addEventListener('DOMContentLoaded', renderDashboard);
     <div class="stat-value" id="unique-colors">—</div>
   </div>
 </div>
+
+<div class="low-stock" id="low-stock" hidden></div>
 
 <div class="ams-section">
   <h3>AMS Loaded — Slots 1–4 + External</h3>

@@ -84,10 +84,12 @@ prints decrement every spool they touched by that filament's own `weightG`:
   the `ams` array entry to the in-use spool id (or `null` if the slot is now empty).
 - Add `taskIds` (array), `materialUsedId` (the spool that fed the most grams),
   `filamentUsedG` (total across all colors) to each new printLog entry, matching the
-  existing entry format exactly; record the per-color split in notes as
-  `Colors: Gray 671.4g, Jade White 254.9g.` Group multi-plate prints of the
-  same design into one entry (plates/colors in notes); cancelled plates get their own
-  `status: "failed"` row.
+  existing entry format exactly. Multi-color prints also get
+  `filaments: [{ spoolId: "pla-gray-s", g: 671.4 }, { spoolId: "pla-jade-white-s", g: 254.9 }]`
+  — one part per spool, summing to `filamentUsedG` (the dashboard's usage chart and
+  print-log swatches read it). Single-color prints omit `filaments`. Group multi-plate
+  prints of the same design into one entry (plate count in notes); cancelled plates get
+  their own `status: "failed"` row.
 - Remove a spool's "⚠ Remaining is stale" note once reconciled.
 
 ### 6. Update data.js
@@ -100,8 +102,9 @@ prints decrement every spool they touched by that filament's own `weightG`:
 - `node tools/validate_data.js --today "$(date +%F)"` → exit 0. It checks: every
   `printLog[].materialUsedId` and non-null `ams` entry exists in `spools[].id`; no
   duplicate spool ids; `0 ≤ remainingG ≤ weightG`; `qty`/`emptied` non-negative; status
-  is `success|failed|reprint`; dates are YYYY-MM-DD; no task id logged twice;
-  `lastUpdated` is today.
+  is `success|failed|reprint`; dates are YYYY-MM-DD; no task id logged twice; every
+  spool has the fields the dashboard reads; `filaments` parts are real spools and sum to
+  `filamentUsedG`; `lastUpdated` is today.
 - If anything fails: fix or revert `data.js` (`git checkout -- data.js`) — never commit a failing state.
 
 ### 8. Ship
@@ -112,4 +115,6 @@ git add data.js
 git commit -m "<descriptive: e.g. 'Log 6 prints (412g), reconcile black/white spools'>"
 git push
 ```
-Do NOT push without the user's OK.
+Do NOT push without the user's OK. The push runs CI (`.github/workflows/ci.yml`): the
+same checks plus a headless render of the dashboard. If it goes red, fix it before
+anything else.
