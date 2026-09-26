@@ -22,9 +22,12 @@ exist in this checkout): `docs/superpowers/specs/2026-06-06-filament-tracker-age
 Precondition: `git status --short data.js` must be clean. If data.js has uncommitted
 changes, stop and ask the user before proceeding (a mid-run revert would destroy them).
 
-Run: `python tools/bambu_fetch.py tasks`
+Run: `python tools/bambu_fetch.py tasks` (pages through up to 300 tasks — more than a
+busy 90-day window).
 - Exit 3 → token missing/expired. Tell the user to run `! python tools/bambu_fetch.py login`
-  in the prompt (interactive: password + email code), then re-fetch.
+  in the prompt (interactive: password or email code), then re-fetch.
+- CAPTCHA / Cloudflare message → Bambu is blocking this network. Do NOT retry (retries
+  extend the CAPTCHA block); tell the user and STOP.
 - Any other failure → show stderr to the user and STOP.
 
 ### 2. Diff
@@ -35,9 +38,18 @@ already covered — anything older than the newest `taskIds`-bearing entry that 
 match is suspect: ask, don't relog.
 Sort oldest-first. If the oldest fetched task is more than 1 day newer than the newest
 `printLog` date, warn the user that Bambu's ~90-day window may have dropped history.
+Skip tasks with `statusName: "printing"` (API status 1 or 4) — they're still running and
+their numbers aren't final; the next sync picks them up. Mention them to the user.
 
 ### 3. Review with the user
 Show new prints as a table: date, title, grams, statusName, filament type/color.
+Know what the API can't tell you, and ask:
+- `weightG` is the slicer's estimate for the WHOLE job. For `failed_or_cancelled`
+  (status 3 — the API can't tell a cancel from a failure) it's the full planned weight,
+  not what was used: ask how far it got before decrementing anything.
+- Prints started from the printer's touchscreen/SD card or in LAN-only mode never reach
+  Bambu Cloud. Ask whether anything was printed that way since the last sync.
+
 Then ask (one batch, not one-by-one unless the user engages): any feedback per print?
 - notes (lessons learned, who it was for)
 - status override (`success` | `failed` | `reprint`)
@@ -58,6 +70,9 @@ prints decrement every spool they touched by that filament's own `weightG`:
   real AMS data) then fall back to the display `color` hex and material
   (`PLA-S`→"PLA Silk", `PLA`→"PLA", `PETG`→"PETG", translucent/glow per spool name).
   When a fallback match is confirmed, store the hex as that spool's `rfidColor`.
+- `amsId`/`slotId` (when present) say which slot fed it: `amsId` 0 + `slotId` 0-3 → `ams`
+  index 0-3, `amsId` 255 → external (index 4). Use it only as a tiebreaker hint — the `ams`
+  array is today's loadout, not what was loaded when the print ran.
 - Subtract that filament's grams from its spool's `remainingG`.
 - AMBIGUOUS (two spools same color, color not in inventory, remainingG would go
   negative) → ask the user. Going negative usually means a refill was loaded:

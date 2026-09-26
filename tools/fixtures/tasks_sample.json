@@ -10,6 +10,7 @@
       "status": 2,
       "weight": 9.53,
       "costTime": 5520,
+      "plateIndex": 1,
       "profileId": 111,
       "deviceId": "01ABCDEF",
       "deviceName": "P2S",
@@ -19,6 +20,8 @@
       "amsDetailMapping": [
         {
           "ams": 0,
+          "amsId": 0,
+          "slotId": 0,
           "sourceColor": "847D48FF",
           "targetColor": "F4A460FF",
           "filamentId": "GFL96",
