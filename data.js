@@ -5,7 +5,7 @@
   Each spool entry:
     id:           unique string
     name:         color name
-    material:     "PLA" | "PETG" | "PLA Silk" | "Mystery"
+    material:     "PLA" | "PETG" | "PLA Silk" | "PLA Translucent" | "PLA Glow" | "Mystery"
     color:        hex code for display swatch
     sku:          manufacturer SKU
     spoolType:    "refill" | "spool"
@@ -17,25 +17,26 @@
     rfidColor:    hex reported by Bambu AMS RFID (exact match key for auto-sync)
     emptied:      count of fully-consumed units (kept so Invested = total ever spent)
 
-  AMS config: set which spool IDs are in slots 1-4
+  AMS config: spool IDs in AMS slots 1-4, then the external spool holder (index 4)
 
   Print log entries:
-    date:         YYYY-MM-DD
-    name:         what you printed
-    url:          MakerWorld/Thingiverse link (optional)
-    material:     what material you used
-    materialUsed: what spool ID was used
-    status:       "success" | "failed" | "reprint"
-    notes:        what happened, lessons learned
-    warnings:     array of material warnings, e.g. ["Do NOT print with PLA Silk"]
-    taskIds:      Bambu Cloud task ids covered by this entry (dedup key for auto-sync)
+    date:           YYYY-MM-DD
+    name:           what you printed
+    url:            MakerWorld/Thingiverse link (optional)
+    material:       what material you used
+    materialUsedId: spool ID of the main filament (multi-color splits go in notes)
+    filamentUsedG:  total grams used across all colors
+    status:         "success" | "failed" | "reprint"
+    notes:          what happened, lessons learned
+    warnings:       array of material warnings, e.g. ["Do NOT print with PLA Silk"]
+    taskIds:        Bambu Cloud task ids covered by this entry (dedup key for auto-sync)
 ═══════════════════════════════════════════════════════════════════
 */
 const INVENTORY_DATA = {
   lastUpdated: "2026-09-11",
   printer: "Bambu Lab P2S + AMS",
 
-  // Which spool IDs are loaded in AMS slots 1-4 (null = empty)
+  // Which spool IDs are loaded in AMS slots 1-4 + external (null = empty)
   ams: ["pla-yellow-r", "pla-cyan-s", null, "pla-indigo-purple-s", null],
 
   printLog: [

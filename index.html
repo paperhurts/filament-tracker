@@ -407,6 +407,12 @@ const stockG = s => s.qty > 0 ? s.remainingG + (s.qty - 1) * s.weightG : 0;
 const capacityG = s => s.weightG * s.qty;          // grams if every unit were full
 const fmtG = g => String(Math.round(g * 100) / 100); // trim float noise: 490.51 + 1000 → "1490.51"
 
+// Print names come from Bambu/MakerWorld titles — third-party text — so escape
+// everything interpolated into innerHTML, and only link out to http(s) URLs.
+const esc = v => String(v ?? '').replace(/[&<>"']/g, c =>
+  ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+const safeUrl = u => /^https?:\/\//i.test(u || '') ? esc(u) : '';
+
 function computeStats(data) {
   const spools = data.spools.filter(s => s.material !== "Mystery");
   const totalSpools = spools.reduce((sum, s) => sum + s.qty, 0);
@@ -418,7 +424,8 @@ function computeStats(data) {
     materials[s.material].count += s.qty;
     materials[s.material].weightG += stockG(s);
   });
-  const colors = spools.reduce((sum, s) => sum + 1, 0); // unique colors
+  // A color stocked as both refill and spool is still one color; emptied entries (qty 0) aren't stock.
+  const colors = new Set(spools.filter(s => s.qty > 0).map(s => s.material + '|' + s.name)).size;
   return { totalSpools, totalWeightKg, totalCost, materials, colors };
 }
 
@@ -439,6 +446,7 @@ function renderDashboard() {
   document.getElementById('total-cost').textContent = '$' + stats.totalCost.toFixed(2);
   document.getElementById('unique-colors').textContent = stats.colors;
   document.getElementById('last-updated').textContent = data.lastUpdated;
+  if (data.printer) document.getElementById('printer-name').textContent = data.printer;
 
   // AMS slots
   const amsContainer = document.getElementById('ams-slots');
@@ -452,8 +460,8 @@ function renderDashboard() {
     return `<div class="ams-slot">
       <div class="ams-slot-num">${i < 4 ? 'SLOT ' + (i + 1) : 'EXTERNAL'}</div>
       <div class="ams-swatch" style="${swatchStyle}"></div>
-      <div class="ams-slot-label">${spool ? spool.name : 'Empty'}</div>
-      <div class="ams-slot-material">${spool ? spool.material : '—'}</div>
+      <div class="ams-slot-label">${spool ? esc(spool.name) : 'Empty'}</div>
+      <div class="ams-slot-material">${spool ? esc(spool.material) : '—'}</div>
     </div>`;
   }).join('');
 
@@ -490,15 +498,15 @@ function renderDashboard() {
             return `<div class="spool-card">
               <div class="spool-swatch" style="${swatchStyle}"></div>
               <div class="spool-info">
-                <div class="spool-name">${s.name}</div>
+                <div class="spool-name">${esc(s.name)}</div>
                 <div class="spool-meta">
-                  <span>${s.spoolType}</span>
+                  <span>${esc(s.spoolType)}</span>
                   <span>$${s.costPerSpool.toFixed(2)}</span>
                   ${s.weightG > 0 ? `<span>${fmtG(stockG(s))}g / ${fmtG(capacityG(s))}g</span>` : ''}
                 </div>
                 ${s.weightG > 0 ? `<div class="weight-bar">${segs}</div>` : ''}
                 ${s.qty > 1 ? `<div class="spool-qty">× ${s.qty} spools</div>` : ''}
-                ${s.notes ? `<div class="spool-qty">${s.notes}</div>` : ''}
+                ${s.notes ? `<div class="spool-qty">${esc(s.notes)}</div>` : ''}
               </div>
             </div>`;
           }).join('')}
@@ -507,6 +515,8 @@ function renderDashboard() {
     }).join('');
 
   // ── Charts ──
+  // Canvas can't resolve CSS custom properties, so read the real value once.
+  const cardBg = getComputedStyle(document.documentElement).getPropertyValue('--bg-card').trim();
   const matGroupColors = { PLA: '#58a6ff', PETG: '#da7756', 'PLA Silk': '#d4a853', 'PLA Translucent': '#a8e6cf', 'PLA Glow': '#76ff7a' };
   const chartMaterialOrder = ['PLA', 'PLA Silk', 'PLA Translucent', 'PLA Glow', 'PETG'];
 
@@ -547,7 +557,7 @@ function renderDashboard() {
         {
           // Separator ring: thin white gap
           data: [1],
-          backgroundColor: ['var(--bg-card)'],
+          backgroundColor: [cardBg],
           borderWidth: 0,
           weight: 0.3,
         },
@@ -615,7 +625,8 @@ function renderDashboard() {
   data.printLog.forEach(entry => {
     if (!entry.filamentUsedG) return;
     const spool = data.spools.find(s => s.id === entry.materialUsedId);
-    const key = entry.materialUsedId || entry.material;
+    // Key by color, not spool id, so a color bought as both refill and spool is one slice.
+    const key = spool ? entry.material + '|' + spool.name : entry.material;
     if (!usageByColor[key]) {
       // For very dark colors, lighten them so they're visible
       let displayColor;
@@ -666,7 +677,7 @@ function renderDashboard() {
           {
             // Separator
             data: [1],
-            backgroundColor: ['var(--bg-card)'],
+            backgroundColor: [cardBg],
             borderWidth: 0,
             weight: 0.3,
           },
@@ -810,20 +821,20 @@ function renderDashboard() {
     logContainer.innerHTML = data.printLog
       .sort((a, b) => b.date.localeCompare(a.date))
       .map(entry => {
-        const statusClass = entry.status;
+        const statusClass = esc(entry.status);
         const statusLabel = entry.status === 'success' ? 'OK' : entry.status === 'failed' ? 'FAIL' : 'REDO';
         return `<tr>
-          <td style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--text-secondary);white-space:nowrap">${entry.date}</td>
+          <td style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--text-secondary);white-space:nowrap">${esc(entry.date)}</td>
           <td>
-            <div style="font-weight:600">${entry.name}</div>
-            ${entry.url ? `<a href="${entry.url}" target="_blank" rel="noopener" class="print-link">MakerWorld ↗</a>` : ''}
+            <div style="font-weight:600">${esc(entry.name)}</div>
+            ${safeUrl(entry.url) ? `<a href="${safeUrl(entry.url)}" target="_blank" rel="noopener" class="print-link">MakerWorld ↗</a>` : ''}
           </td>
-          <td><span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem">${entry.material}</span></td>
+          <td><span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem">${esc(entry.material)}</span></td>
           <td><span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;white-space:nowrap">${entry.filamentUsedG ? entry.filamentUsedG + 'g' : '—'}</span></td>
           <td><span class="print-status ${statusClass}">${statusLabel}</span></td>
           <td>
-            ${entry.notes ? `<div class="print-notes">${entry.notes}</div>` : ''}
-            ${entry.warnings ? entry.warnings.map(w => `<div class="print-warning">⚠ ${w}</div>`).join('') : ''}
+            ${entry.notes ? `<div class="print-notes">${esc(entry.notes)}</div>` : ''}
+            ${entry.warnings ? entry.warnings.map(w => `<div class="print-warning">⚠ ${esc(w)}</div>`).join('') : ''}
           </td>
         </tr>`;
       }).join('');
@@ -839,7 +850,7 @@ document.addEventListener('DOMContentLoaded', renderDashboard);
   <h1>Filament Inventory</h1>
   <span class="subtitle">// spool tracker</span>
 </header>
-<div class="printer-badge"><span class="dot"></span> Bambu Lab P2S + AMS</div>
+<div class="printer-badge"><span class="dot"></span> <span id="printer-name">Bambu Lab P2S + AMS</span></div>
 
 <div class="summary-row">
   <div class="stat-card">

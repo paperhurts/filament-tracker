@@ -6,7 +6,8 @@ description: Update the filament tracker — fetch new prints from Bambu Cloud, 
 # Filament Tracker Update
 
 Single source of truth: `data.js` (`INVENTORY_DATA`). `index.html` is presentation
-only — never edit data into it. Spec: `docs/superpowers/specs/2026-06-06-filament-tracker-agent-design.md`.
+only — never edit data into it. Design spec (local-only, `docs/` is gitignored — may not
+exist in this checkout): `docs/superpowers/specs/2026-06-06-filament-tracker-agent-design.md`.
 
 ## Hard rules
 
@@ -50,13 +51,14 @@ a new entry following existing conventions — id like `pla-<color>-r` (refill) 
 `pla-<color>-s` (spool), `notes` recording the order number, real `costPerSpool`.
 
 ### 5. Spool math
-For each new print, map its filament (`color` = targetColor, what the AMS actually
-fed — NOT `sourceColor`, the designer's intent) to a spool id:
+For each new print, map EACH of its `filaments[]` (`color` = targetColor, what the AMS
+actually fed — NOT `sourceColor`, the designer's intent) to a spool id. Multi-color
+prints decrement every spool they touched by that filament's own `weightG`:
 - Match the task's filament color against spool `rfidColor` first (exact, set from
   real AMS data) then fall back to the display `color` hex and material
   (`PLA-S`→"PLA Silk", `PLA`→"PLA", `PETG`→"PETG", translucent/glow per spool name).
   When a fallback match is confirmed, store the hex as that spool's `rfidColor`.
-- Subtract the print's grams from that spool's `remainingG`.
+- Subtract that filament's grams from its spool's `remainingG`.
 - AMBIGUOUS (two spools same color, color not in inventory, remainingG would go
   negative) → ask the user. Going negative usually means a refill was loaded:
   confirm, zero out / retire the empty, start decrementing the refill (refill becomes
@@ -65,8 +67,10 @@ fed — NOT `sourceColor`, the designer's intent) to a spool id:
   dashboard counts `qty + emptied`, so lifetime spend never shrinks).
 - If a spool that is loaded in the `ams` array is retired, renamed, or swapped, update
   the `ams` array entry to the in-use spool id (or `null` if the slot is now empty).
-- Add `taskIds` (array), `materialUsedId`, `filamentUsedG` to each new printLog
-  entry, matching the existing entry format exactly. Group multi-plate prints of the
+- Add `taskIds` (array), `materialUsedId` (the spool that fed the most grams),
+  `filamentUsedG` (total across all colors) to each new printLog entry, matching the
+  existing entry format exactly; record the per-color split in notes as
+  `Colors: Gray 671.4g, Jade White 254.9g.` Group multi-plate prints of the
   same design into one entry (plates/colors in notes); cancelled plates get their own
   `status: "failed"` row.
 - Remove a spool's "⚠ Remaining is stale" note once reconciled.
@@ -78,13 +82,11 @@ fed — NOT `sourceColor`, the designer's intent) to a spool id:
 
 ### 7. Validate (all must pass before commit)
 - `node --check data.js` → exit 0.
-- Sanity script (note: `new Function`, not `eval` — `const` declarations inside
-  `eval()` don't leak to the outer scope in modern Node):
-  every `printLog[].materialUsedId` exists in `spools[].id`; every non-null `ams` entry
-  exists in `spools[].id`; no `remainingG < 0`; no duplicate task id across all
-  `taskIds` arrays; `lastUpdated` is today.
-  Run:
-  `node -e "const src=require('fs').readFileSync('data.js','utf8'); const d=new Function(src+'; return INVENTORY_DATA;')(); const ids=new Set(d.spools.map(s=>s.id)); const bad=d.printLog.filter(p=>p.materialUsedId&&!ids.has(p.materialUsedId)); const amsBad=(d.ams||[]).filter(a=>a&&!ids.has(a)); const neg=d.spools.filter(s=>s.remainingG<0); const tids=d.printLog.flatMap(p=>p.taskIds||(p.taskId?[p.taskId]:[])); const dup=tids.length!==new Set(tids).size; if(bad.length||amsBad.length||neg.length||dup){console.error('FAIL',{bad:bad.map(p=>p.name),amsBad,neg:neg.map(s=>s.id),dup});process.exit(1)} console.log('data.js OK')"`
+- `node tools/validate_data.js --today "$(date +%F)"` → exit 0. It checks: every
+  `printLog[].materialUsedId` and non-null `ams` entry exists in `spools[].id`; no
+  duplicate spool ids; `0 ≤ remainingG ≤ weightG`; `qty`/`emptied` non-negative; status
+  is `success|failed|reprint`; dates are YYYY-MM-DD; no task id logged twice;
+  `lastUpdated` is today.
 - If anything fails: fix or revert `data.js` (`git checkout -- data.js`) — never commit a failing state.
 
 ### 8. Ship
